@@ -1,0 +1,8 @@
+msgid "The password should be at least %{min_len} characters long."
+msgstr "La clave debe contener al menos %{min_len} caracteres."
+
+msgid "The password should contain at least one number and one punctuation character."
+msgstr "La clave debe contener al menos un dígito numérico y un signo de puntuación."
+
+msgid "The password you have chosen is weak because it is easy to guess. Please choose another one."
+msgstr "La clave que ha elegido puede ser adivinada muy fácilmente. Por favor elija una nueva clave."
