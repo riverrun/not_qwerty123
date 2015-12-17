@@ -2,6 +2,10 @@ defmodule NotQwerty123.RandomPassword do
   @moduledoc """
   Module to generate random passwords and check password strength.
 
+  Users are often advised to use random passwords for authentication.
+  However, creating truly random passwords is difficult for people to
+  do well and is something that computers are usually better at.
+
   The `gen_password` function generates a random password with letters,
   digits and punctuation characters.
   """
@@ -15,10 +19,6 @@ defmodule NotQwerty123.RandomPassword do
 
   @doc """
   Randomly generate a password.
-
-  Users are often advised to use random passwords for authentication.
-  However, creating truly random passwords is difficult for people to
-  do well and is something that computers are usually better at.
 
   This function creates a random password that is guaranteed to contain
   at least one digit and one punctuation character.

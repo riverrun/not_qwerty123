@@ -2,6 +2,12 @@ defmodule NotQwerty123.PasswordStrength do
   @moduledoc """
   Module to check password strength.
 
+  This module does not provide a password strength meter. Instead, it
+  simply rejects passwords that are considered too weak. Depending on
+  the nature of your application, a front end solution to password
+  checking, such as [this Dropbox implementation](https://github.com/dropbox/zxcvbn)
+  might be a better idea.
+
   The `strong_password?` function checks that the password is long enough,
   it contains at least one digit and one punctuation character, and it is
   not similar to any common passwords.

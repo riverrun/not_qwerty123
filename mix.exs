@@ -33,7 +33,7 @@ defmodule NotQwerty123.Mixfile do
     [
       maintainers: ["David Whitlock"],
       licenses: ["BSD"],
-      links: %{"GitHub" => "https://github.com/riverrun/not_qwerty123",
+      links: %{"GitHub" => "https://github.com/riverrun/notqwerty123",
         "Docs" => "http://hexdocs.pm/not_qwerty123"}
     ]
   end
