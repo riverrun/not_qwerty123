@@ -16,7 +16,7 @@ defmodule NotQwerty123.Mixfile do
      name: "NotQwerty123",
      description: @description,
      package: package,
-     source_url: "https://github.com/riverrun/not_qwerty123",
+     source_url: "https://github.com/riverrun/notqwerty123",
      compilers: [:gettext] ++ Mix.compilers,
      deps: deps]
   end
@@ -27,9 +27,9 @@ defmodule NotQwerty123.Mixfile do
 
   defp deps do
     [
-      {:gettext, "~> 0.7"},
+      {:gettext, "~> 0.9"},
       {:earmark, "~> 0.1", only: :dev},
-      {:ex_doc,  "~> 0.10", only: :dev}
+      {:ex_doc,  "~> 0.11", only: :dev}
     ]
   end
 
