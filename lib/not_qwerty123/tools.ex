@@ -1,4 +1,6 @@
 defmodule NotQwerty123.Tools do
+  @moduledoc """
+  """
 
   def get_words do
     Path.join([__DIR__, "common_passwords", "10k_6chars.txt"])
@@ -9,6 +11,15 @@ defmodule NotQwerty123.Tools do
     if fun.(h), do: h, else: any?(t, fun)
   end
   def any?([], _), do: false
+
+  defmacro left &&& right do
+    quote do
+      case unquote(left) do
+        true -> unquote(right)
+        message -> message
+      end
+    end
+  end
 
   defp create_map(wordlist) do
     Enum.reduce(wordlist, %{}, fn word, acc -> update_map(acc, word) end)
@@ -21,5 +32,4 @@ defmodule NotQwerty123.Tools do
       :error -> Map.put(map, k, [v])
     end
   end
-
 end

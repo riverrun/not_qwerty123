@@ -79,8 +79,7 @@ defmodule NotQwerty123.PasswordStrength do
 
   """
 
-  import NotQwerty123.Common
-  import NotQwerty123.Gettext
+  import NotQwerty123.{Common, Gettext, Tools}
 
   @digits String.codepoints("0123456789")
   @punc String.codepoints(" !#$%&'()*+,-./:;<=>?@[\\]^_{|}~\"")
@@ -116,6 +115,9 @@ defmodule NotQwerty123.PasswordStrength do
   removed. For example, the words `(p@$swoRd`, `p4ssw0rD3` and `^P455woRd9`
   would also not be allowed as they are too similar to `password`.
 
+  This `common` option now includes a check for single and double-character
+  repetitions, such as '000000000000000000000' or 'ababababababababab'.
+
   ## Examples
 
   This example will check that the password is at least 8 characters long,
@@ -131,47 +133,37 @@ defmodule NotQwerty123.PasswordStrength do
 
   """
   def strong_password?(password, opts \\ []) do
-    common = Keyword.get(opts, :common, true)
-    {min_len, extra_chars} = case Keyword.get(opts, :extra_chars, true) do
-      true -> {Keyword.get(opts, :min_length, 8), true}
-      _ -> {Keyword.get(opts, :min_length, 12), false}
-    end
+    {min_len, extra_chars, common} = get_opts(opts)
     word_len = String.length(password)
-    case pass_length?(word_len, min_len) do
-      true -> further_checks(extra_chars, common, password, word_len)
-      message -> message
-    end
+    long_enough?(word_len, min_len) &&&
+      has_punc_digit?(extra_chars, password) &&&
+      not_common?(common, password, word_len)
   end
 
-  defp further_checks(false, false, _password, _word_len), do: true
-  defp further_checks(false, true, password, word_len), do: not_common?(password, word_len)
-  defp further_checks(true, false, password, _word_len), do: has_punc_digit?(password)
-  defp further_checks(true, true, password, word_len) do
-    case has_punc_digit?(password) do
-      true -> not_common?(password, word_len)
-      message -> message
-    end
+  defp get_opts(opts) do
+    {min_len, extra_chars} = case Keyword.get(opts, :extra_chars, true) do
+                               true -> {Keyword.get(opts, :min_length, 8), true}
+                               _ -> {Keyword.get(opts, :min_length, 12), false}
+                             end
+    {min_len, extra_chars, Keyword.get(opts, :common, true)}
   end
 
-  defp pass_length?(word_len, min_len) when word_len < min_len do
+  defp long_enough?(word_len, min_len) when word_len < min_len do
     gettext "The password should be at least %{min_len} characters long.", min_len: min_len
   end
-  defp pass_length?(_, _), do: true
+  defp long_enough?(_, _), do: true
 
-  defp has_punc_digit?(word) do
-    if :binary.match(word, @digits) != :nomatch and :binary.match(word, @punc) != :nomatch do
-      true
-    else
-      gettext "The password should contain at least one number and one punctuation character."
-    end
+  defp has_punc_digit?(true, word) do
+    :binary.match(word, @digits) != :nomatch and
+    :binary.match(word, @punc) != :nomatch or
+    gettext "The password should contain at least one number and one punctuation character."
   end
+  defp has_punc_digit?(false, _), do: true
 
-  defp not_common?(password, word_len) when word_len < 13 do
-    if password |> String.downcase |> common_password?(word_len) do
-      gettext "The password you have chosen is weak because it is easy to guess. Please choose another one."
-    else
-      true
-    end
+  defp not_common?(true, password, word_len) do
+    password |> String.downcase |> common_password?(word_len) and
+    gettext("The password you have chosen is weak because it is easy to guess. " <>
+      "Please choose another one.") || true
   end
-  defp not_common?(_, _), do: true
+  defp not_common?(false, _, _), do: true
 end

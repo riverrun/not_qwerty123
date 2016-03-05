@@ -16,29 +16,29 @@ defmodule NotQwerty123.Common do
   @common_keys Map.keys(get_words) |> :sets.from_list
 
   @sub_dict %{"a" => ["a", "@", "4"], "b" => ["b", "8"],
-    "c" => ["c", "[", "("], "d" => ["d"],
-    "e" => ["e", "3"], "f" => ["f"],
-    "g" => ["g", "6", "9"], "h" => ["h","#"],
-    "i" => ["i", "1", "!"], "j" => ["j"],
-    "k" => ["k"], "l" => ["l", "!", "1"],
-    "m" => ["m"], "n" => ["n"],
-    "o" => ["o", "0"], "p" => ["p"],
-    "q" => ["q"], "r" => ["r"],
-    "s" => ["s", "$", "5"], "t" => ["t", "+", "7"],
-    "u" => ["u", "v"], "v" => ["v", "u"],
-    "w" => ["w"], "x" => ["x", "+"],
-    "y" => ["y"], "z" => ["z", "2"],
-    "0" => ["0", "o", ")"], "1" => ["1", "!", "i", "l"],
-    "2" => ["2", "@", "z"], "3" => ["3", "#", "e"],
-    "4" => ["4", "$", "a"], "5" => ["5", "%", "s"],
-    "6" => ["6", "^", "g"], "7" => ["7", "&", "t"],
-    "8" => ["8", "*", "b"], "9" => ["9", "(", "g"],
-    "!" => ["!", "1"], "@" => ["@", "a"],
-    "#" => ["#", "h", "3"], "$" => ["$", "s", "4"],
-    "%" => ["%", "5"], "^" => ["^", "6"],
-    "&" => ["&", "7"], "*" => ["*", "8"],
-    "(" => ["(", "c", "9"], "[" => ["[", "c"],
-    "+" => ["+", "x", "t"]}
+              "c" => ["c", "[", "("], "d" => ["d"],
+              "e" => ["e", "3"], "f" => ["f"],
+              "g" => ["g", "6", "9"], "h" => ["h","#"],
+              "i" => ["i", "1", "!"], "j" => ["j"],
+              "k" => ["k"], "l" => ["l", "!", "1"],
+              "m" => ["m"], "n" => ["n"],
+              "o" => ["o", "0"], "p" => ["p"],
+              "q" => ["q"], "r" => ["r"],
+              "s" => ["s", "$", "5"], "t" => ["t", "+", "7"],
+              "u" => ["u", "v"], "v" => ["v", "u"],
+              "w" => ["w"], "x" => ["x", "+"],
+              "y" => ["y"], "z" => ["z", "2"],
+              "0" => ["0", "o", ")"], "1" => ["1", "!", "i", "l"],
+              "2" => ["2", "@", "z"], "3" => ["3", "#", "e"],
+              "4" => ["4", "$", "a"], "5" => ["5", "%", "s"],
+              "6" => ["6", "^", "g"], "7" => ["7", "&", "t"],
+              "8" => ["8", "*", "b"], "9" => ["9", "(", "g"],
+              "!" => ["!", "1"], "@" => ["@", "a"],
+              "#" => ["#", "h", "3"], "$" => ["$", "s", "4"],
+              "%" => ["%", "5"], "^" => ["^", "6"],
+              "&" => ["&", "7"], "*" => ["*", "8"],
+              "(" => ["(", "c", "9"], "[" => ["[", "c"],
+              "+" => ["+", "x", "t"]}
 
   @doc """
   Check to see if the passord is too similar to any of the passwords
@@ -52,19 +52,21 @@ defmodule NotQwerty123.Common do
   The password `p@$5W0rD9` would produce these (among other) words,
   which can be checked against a list of common passwords:
 
-      ["p4sswordg", "assword9", "assword", "password",
-      "p@s%word", "pas%w0rd9", "a$%w0rd9", "p445w0rd"]
+  ["p4sswordg", "assword9", "assword", "password",
+  "p@s%word", "pas%w0rd9", "a$%w0rd9", "p445w0rd"]
 
   As can be seen, `p@$5W0rD9` is similar to the very common password `password`,
   and so it is judged to be too weak.
   """
-  def common_password?(password, word_len) do
+  def common_password?(password, word_len) when word_len < 13 do
+    Regex.match?(~r/^.?(..?)(\\1+).?$/, password) or
     case {password |> check_start(0), password |> check_start(1)} do
       {false, false} -> false
       {word, false} -> check_rest(password, word, 4, word_len - 4)
       {_, word} -> check_rest(password, word, 5, word_len - 5)
     end
   end
+  def common_password?(password, _), do: Regex.match?(~r/^.?(..?)(\\1+).?$/, password)
 
   defp check_start(password, start) do
     get_candidates(password, {start, 4}) |> any?(&:sets.is_element(&1, @common_keys))
@@ -96,5 +98,4 @@ defmodule NotQwerty123.Common do
   defp product([h|t]) do
     for i <- h, j <- product(t), do: [i|j]
   end
-
 end
