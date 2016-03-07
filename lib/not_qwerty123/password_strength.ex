@@ -135,9 +135,9 @@ defmodule NotQwerty123.PasswordStrength do
   def strong_password?(password, opts \\ []) do
     {min_len, extra_chars, common} = get_opts(opts)
     word_len = String.length(password)
-    long_enough?(word_len, min_len) &&&
-      has_punc_digit?(extra_chars, password) &&&
-      not_common?(common, password, word_len)
+    all_true? [long_enough?(word_len, min_len),
+               has_punc_digit?(extra_chars, password),
+               not_common?(common, password, word_len)]
   end
 
   defp get_opts(opts) do

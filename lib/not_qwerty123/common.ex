@@ -59,14 +59,18 @@ defmodule NotQwerty123.Common do
   and so it is judged to be too weak.
   """
   def common_password?(password, word_len) when word_len < 13 do
-    Regex.match?(~r/^.?(..?)(\\1+).?$/, password) or
-    case {password |> check_start(0), password |> check_start(1)} do
-      {false, false} -> false
-      {word, false} -> check_rest(password, word, 4, word_len - 4)
-      {_, word} -> check_rest(password, word, 5, word_len - 5)
+    Regex.match?(~r/^.?(..?.?)(\1+).?$/, password) or
+    further_check(password, 0, word_len)
+  end
+  def common_password?(password, _), do: Regex.match?(~r/^.?(..?.?)(\1+).?$/, password)
+
+  defp further_check(password, start, word_len) when start < 2 do
+    case check_start(password, start) do
+      false -> further_check(password, start + 1, word_len)
+      word -> check_rest(password, word, 4 + start, word_len - (4 + start))
     end
   end
-  def common_password?(password, _), do: Regex.match?(~r/^.?(..?)(\\1+).?$/, password)
+  defp further_check(_, _, _), do: false
 
   defp check_start(password, start) do
     get_candidates(password, {start, 4}) |> any?(&:sets.is_element(&1, @common_keys))

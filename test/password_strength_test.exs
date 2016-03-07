@@ -64,6 +64,14 @@ defmodule NotQwerty123.PasswordStrengthTest do
     end
   end
 
+  test "repeated characters return message" do
+    for id <- ["xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "abcabcabcabcabcabcabc", "ababababababababababababababa"] do
+      assert strong_password?(id, [extra_chars: false]) ==
+      "The password you have chosen is weak because it is easy to guess. Please choose another one."
+    end
+  end
+
   test "uncommon passwords" do
     for id <- ["8(o0b$d0o", "Gw3r+y12e", "@lT#4z!e"] do
       assert strong_password?(id) == true

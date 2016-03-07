@@ -17,7 +17,7 @@ The package can be installed as:
   1. Add not_qwerty123 to your list of dependencies in `mix.exs`:
 
         def deps do
-          [{:not_qwerty123, "~> 1.0"}]
+          [{:not_qwerty123, "~> 1.1"}]
         end
 
   2. Ensure not_qwerty123 is started before your application:
