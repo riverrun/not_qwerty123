@@ -1,7 +1,7 @@
 defmodule NotQwerty123.Mixfile do
   use Mix.Project
 
-  @version "1.1.0"
+  @version "1.1.1"
 
   @description """
   Library to check password strength and generate random passwords.
@@ -16,7 +16,7 @@ defmodule NotQwerty123.Mixfile do
      name: "NotQwerty123",
      description: @description,
      package: package,
-     source_url: "https://github.com/riverrun/notqwerty123",
+     source_url: "https://github.com/riverrun/not_qwerty123",
      compilers: [:gettext] ++ Mix.compilers,
      deps: deps]
   end
@@ -26,19 +26,15 @@ defmodule NotQwerty123.Mixfile do
   end
 
   defp deps do
-    [
-      {:gettext, "~> 0.10"},
-      {:earmark, "~> 0.2", only: :dev},
-      {:ex_doc,  "~> 0.11", only: :dev}
-    ]
+    [{:gettext, "~> 0.11"},
+     {:earmark, "~> 0.2", only: :dev},
+     {:ex_doc,  "~> 0.12", only: :dev}]
   end
 
   defp package do
-    [
-      maintainers: ["David Whitlock"],
-      licenses: ["BSD"],
-      links: %{"GitHub" => "https://github.com/riverrun/notqwerty123",
-        "Docs" => "http://hexdocs.pm/not_qwerty123"}
-    ]
+    [maintainers: ["David Whitlock"],
+     licenses: ["BSD"],
+     links: %{"GitHub" => "https://github.com/riverrun/not_qwerty123",
+      "Docs" => "http://hexdocs.pm/not_qwerty123"}]
   end
 end
