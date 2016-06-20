@@ -12,8 +12,8 @@ defmodule NotQwerty123.Common do
 
   import NotQwerty123.Tools
 
-  @common get_words
-  @common_keys Map.keys(get_words) |> :sets.from_list
+  @common get_words()
+  @common_keys Map.keys(get_words()) |> :sets.from_list()
 
   @sub_dict %{"a" => ["a", "@", "4"], "b" => ["b", "8"],
               "c" => ["c", "[", "("], "d" => ["d"],
@@ -82,16 +82,16 @@ defmodule NotQwerty123.Common do
   end
 
   defp get_candidates(word, len) do
-    :binary.part(word, len) |> word_alternatives |> List.flatten
+    :binary.part(word, len) |> word_alternatives() |> List.flatten()
   end
 
   defp get_candidates(word, full, shorter) do
     [:binary.part(word, full), :binary.part(word, shorter)]
-    |> Enum.map(&word_alternatives/1) |> List.flatten
+    |> Enum.map(&word_alternatives/1) |> List.flatten()
   end
 
   defp word_alternatives(password) do
-    for i <- password |> word_subs |> product, do: Enum.join(i)
+    for i <- password |> word_subs() |> product(), do: Enum.join(i)
   end
 
   defp word_subs(word) do

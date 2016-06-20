@@ -28,14 +28,14 @@ defmodule NotQwerty123.RandomPassword do
   """
   def gen_password(len \\ 12)
   def gen_password(len) when len > 7 do
-    rand_password(len) |> to_string |> ensure_strong(len)
+    rand_password(len) |> to_string() |> ensure_strong(len)
   end
   def gen_password(_) do
     raise ArgumentError, message: "The password should be at least 8 characters long."
   end
 
   defp rand_password(len) do
-    case rand_numbers(len) |> punc_digit? do
+    case rand_numbers(len) |> punc_digit?() do
       false -> rand_password(len)
       code -> for val <- code, do: Map.get(@char_map, val)
     end

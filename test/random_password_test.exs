@@ -7,7 +7,7 @@ defmodule NotQwerty123.RandomPasswordTest do
   test "random password length" do
     assert gen_password(8) |> String.length == 8
     assert gen_password(16) |> String.length == 16
-    assert gen_password |> String.length == 12
+    assert gen_password() |> String.length == 12
   end
 
   test "random password too short length" do
@@ -19,7 +19,7 @@ defmodule NotQwerty123.RandomPasswordTest do
   end
 
   test "stong password generated" do
-    assert gen_password |> strong_password? == true
+    assert gen_password() |> strong_password? == true
   end
 
 end

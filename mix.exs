@@ -1,7 +1,7 @@
 defmodule NotQwerty123.Mixfile do
   use Mix.Project
 
-  @version "1.1.1"
+  @version "1.2.0"
 
   @description """
   Library to check password strength and generate random passwords.
@@ -15,10 +15,10 @@ defmodule NotQwerty123.Mixfile do
      start_permanent: Mix.env == :prod,
      name: "NotQwerty123",
      description: @description,
-     package: package,
+     package: package(),
      source_url: "https://github.com/riverrun/not_qwerty123",
      compilers: [:gettext] ++ Mix.compilers,
-     deps: deps]
+     deps: deps()]
   end
 
   def application do

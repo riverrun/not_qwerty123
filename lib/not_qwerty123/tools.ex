@@ -34,7 +34,7 @@ defmodule NotQwerty123.Tools do
   """
   def get_words do
     Path.join([__DIR__, "common_passwords", "10k_6chars.txt"])
-    |> File.read! |> String.split("\n") |> create_map
+    |> File.read!() |> String.split("\n") |> create_map()
   end
 
   @doc """

@@ -142,9 +142,9 @@ defmodule NotQwerty123.PasswordStrength do
 
   defp get_opts(opts) do
     {min_len, extra_chars} = case Keyword.get(opts, :extra_chars, true) do
-                               true -> {Keyword.get(opts, :min_length, 8), true}
-                               _ -> {Keyword.get(opts, :min_length, 12), false}
-                             end
+      true -> {Keyword.get(opts, :min_length, 8), true}
+      _ -> {Keyword.get(opts, :min_length, 12), false}
+    end
     {min_len, extra_chars, Keyword.get(opts, :common, true)}
   end
 
@@ -161,9 +161,9 @@ defmodule NotQwerty123.PasswordStrength do
   defp has_punc_digit?(false, _), do: true
 
   defp not_common?(true, password, word_len) do
-    password |> String.downcase |> common_password?(word_len) and
+    password |> String.downcase() |> common_password?(word_len) and
     gettext("The password you have chosen is weak because it is easy to guess. " <>
-      "Please choose another one.") || true
+     "Please choose another one.") || true
   end
   defp not_common?(false, _, _), do: true
 end
