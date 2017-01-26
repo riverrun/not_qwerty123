@@ -76,19 +76,17 @@ defmodule NotQwerty123.PasswordStrength do
 
   """
 
-  import NotQwerty123.{Common, Gettext}
+  import NotQwerty123.{Gettext, Guessable}
 
   @doc """
   Check the strength of the password.
 
   ## Options
 
-  There are two options:
+  There is one option:
 
     * min_length -- minimum allowable length of the password
-      * default is 8
-    * common -- check to see if the password is too common (easy to guess)
-      * default is true
+      * default is 12
 
   ## Common passwords
 
@@ -120,15 +118,11 @@ defmodule NotQwerty123.PasswordStrength do
 
   """
   def strong_password?(password, opts \\ []) do
-    {min_len, common} = get_opts(opts)
+    min_len = Keyword.get(opts, :min_length, 8)
     case long_enough?(String.length(password), min_len) do
-      true -> not_common?(common, password)
+      true -> not_guessable?(password)
       message -> message
     end
-  end
-
-  defp get_opts(opts) do
-    {Keyword.get(opts, :min_length, 8), Keyword.get(opts, :common, true)}
   end
 
   defp long_enough?(word_len, min_len) when word_len < min_len do
@@ -136,10 +130,9 @@ defmodule NotQwerty123.PasswordStrength do
   end
   defp long_enough?(_, _), do: true
 
-  defp not_common?(true, password) do
-    common_password?(password) and
+  defp not_guessable?(password) do
+    easy_guess?(password) and
     gettext("The password you have chosen is weak because it is easy to guess. " <>
      "Please choose another one.") || true
   end
-  defp not_common?(false, _), do: true
 end

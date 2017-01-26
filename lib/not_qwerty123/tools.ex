@@ -17,7 +17,7 @@ defmodule NotQwerty123.Tools do
   Create the word list used in the common password strength check.
   """
   def get_words do
-    Path.join([__DIR__, "common_passwords", "10k_6chars.txt"])
+    Path.join([__DIR__, "wordlists", "10k_6chars.txt"])
     |> File.read!
     |> String.downcase
     |> String.split("\n")
