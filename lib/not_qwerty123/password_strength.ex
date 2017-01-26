@@ -4,13 +4,12 @@ defmodule NotQwerty123.PasswordStrength do
 
   This module does not provide a password strength meter. Instead, it
   simply rejects passwords that are considered too weak. Depending on
-  the nature of your application, a front end solution to password
+  the nature of your application, a solid front end solution to password
   checking, such as [this Dropbox implementation](https://github.com/dropbox/zxcvbn)
   might be a better idea.
 
   The `strong_password?` function checks that the password is long enough,
-  it contains at least one digit and one punctuation character, and it is
-  not similar to any common passwords.
+  and it is not similar to any common passwords.
 
   # Password security and usability
 
@@ -36,10 +35,8 @@ defmodule NotQwerty123.PasswordStrength do
   patterns.
 
   Entropy refers to the number of combinations that a password
-  with a certain character set and a certain length would have. The
-  larger the character set and the longer the password is, the greater
-  the entropy. This is why users are often encouraged to write long
-  passwords that contain digits or punctuation characters.
+  with a certain character set and a certain length would have. In
+  simple terms, the longer the password is, the greater the entropy.
 
   Entropy is related to password strength, and a password with a higher
   entropy is usually stronger than one with a lower entropy. However,
@@ -49,8 +46,8 @@ defmodule NotQwerty123.PasswordStrength do
   ## Password strength check
 
   In this module's `strong_password?` function, the option common
-  is meant to keep the guessability low, and the options min_length
-  and extra_chars seek to keep the entropy high.
+  is meant to keep the guessability low, and the option min_length
+  seeks to keep the entropy high.
 
   ## User attitudes and password security
 
@@ -79,28 +76,19 @@ defmodule NotQwerty123.PasswordStrength do
 
   """
 
-  import NotQwerty123.{Common, Gettext, Tools}
-
-  @digits String.codepoints("0123456789")
-  @punc String.codepoints(" !#$%&'()*+,-./:;<=>?@[\\]^_{|}~\"")
+  import NotQwerty123.{Common, Gettext}
 
   @doc """
   Check the strength of the password.
 
   ## Options
 
-  There are three options:
+  There are two options:
 
     * min_length -- minimum allowable length of the password
-    * extra_chars -- check for punctuation characters (including spaces) and digits
+      * default is 8
     * common -- check to see if the password is too common (easy to guess)
-
-  The default value for `min_length` is 8 characters if `extra_chars` is true,
-  but 12 characters if `extra_chars` is false. This is because the password
-  should be longer if the character set is restricted to upper and lower case
-  letters.
-
-  `extra_chars` and `common` are true by default.
+      * default is true
 
   ## Common passwords
 
@@ -121,31 +109,26 @@ defmodule NotQwerty123.PasswordStrength do
   ## Examples
 
   This example will check that the password is at least 8 characters long,
-  it contains at least one punctuation character and one digit, and it is
-  not similar to any word in the list of common passwords.
+  and that it is not similar to any word in the list of common passwords.
 
       NotQwerty123.PasswordStrength.strong_password?("7Gr$cHs9")
 
   The following example will check that the password is at least 16 characters
-  long and will not check for punctuation characters or digits.
+  long.
 
-      NotQwerty123.PasswordStrength.strong_password?("verylongpassword", [min_length: 16, extra_chars: false])
+      NotQwerty123.PasswordStrength.strong_password?("verylongpassword", [min_length: 16])
 
   """
   def strong_password?(password, opts \\ []) do
-    {min_len, extra_chars, common} = get_opts(opts)
-    word_len = String.length(password)
-    all_true? [long_enough?(word_len, min_len),
-               has_punc_digit?(extra_chars, password),
-               not_common?(common, password, word_len)]
+    {min_len, common} = get_opts(opts)
+    case long_enough?(String.length(password), min_len) do
+      true -> not_common?(common, password)
+      message -> message
+    end
   end
 
   defp get_opts(opts) do
-    {min_len, extra_chars} = case Keyword.get(opts, :extra_chars, true) do
-      true -> {Keyword.get(opts, :min_length, 8), true}
-      _ -> {Keyword.get(opts, :min_length, 12), false}
-    end
-    {min_len, extra_chars, Keyword.get(opts, :common, true)}
+    {Keyword.get(opts, :min_length, 8), Keyword.get(opts, :common, true)}
   end
 
   defp long_enough?(word_len, min_len) when word_len < min_len do
@@ -153,17 +136,10 @@ defmodule NotQwerty123.PasswordStrength do
   end
   defp long_enough?(_, _), do: true
 
-  defp has_punc_digit?(true, word) do
-    :binary.match(word, @digits) != :nomatch and
-    :binary.match(word, @punc) != :nomatch or
-    gettext "The password should contain at least one number and one punctuation character."
-  end
-  defp has_punc_digit?(false, _), do: true
-
-  defp not_common?(true, password, word_len) do
-    password |> String.downcase() |> common_password?(word_len) and
+  defp not_common?(true, password) do
+    common_password?(password) and
     gettext("The password you have chosen is weak because it is easy to guess. " <>
      "Please choose another one.") || true
   end
-  defp not_common?(false, _, _), do: true
+  defp not_common?(false, _), do: true
 end

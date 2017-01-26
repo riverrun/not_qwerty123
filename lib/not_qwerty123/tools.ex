@@ -3,58 +3,40 @@ defmodule NotQwerty123.Tools do
   Various tools used by the password strength checker.
   """
 
-  @doc """
-  Check to see if all the functions in a list return true.
-  """
-  defmacro all_true?([h|t]) do
-    quote do
-      case unquote(h) do
-        true -> all_true?(unquote(t))
-        message -> message
-      end
-    end
-  end
-  defmacro all_true?([]), do: true
+  @sub_dict %{
+    "!" => ["i"], "@" => ["a"], "$" => ["s"],
+    "%" => ["x"], "(" => ["c"], "[" => ["c"],
+    "+" => ["t"], "|" => ["i", "l"],
+    "0" => ["o"], "1" => ["i", "l"], "2" => ["z"],
+    "3" => ["e"], "4" => ["a"], "5" => ["s"],
+    "6" => ["g"], "7" => ["t"], "8" => ["b"],
+    "9" => ["g"]
+  }
 
   @doc """
-  Similar to `&&`, but the expression on the right will only be evaluated
-  if the left expression is true.
-  """
-  defmacro left &&& right do
-    quote do
-      case unquote(left) do
-        true -> unquote(right)
-        message -> message
-      end
-    end
-  end
-
-  @doc """
-  Create the word map used in the common password strength check.
+  Create the word list used in the common password strength check.
   """
   def get_words do
     Path.join([__DIR__, "common_passwords", "10k_6chars.txt"])
-    |> File.read!() |> String.split("\n") |> create_map()
+    |> File.read!
+    |> String.downcase
+    |> String.split("\n")
+    |> Enum.flat_map(&permute/1)
   end
 
   @doc """
-  Apply a function to every element in a list and return true is any
-  of the elements returns true.
   """
-  def any?([h|t], fun) do
-    if fun.(h), do: h, else: any?(t, fun)
-  end
-  def any?([], _), do: false
-
-  defp create_map(wordlist) do
-    Enum.reduce(wordlist, %{}, fn word, acc -> update_map(acc, word) end)
+  def permute(""), do: [""]
+  def permute(password) do
+    for i <- substitute(password) |> product, do: Enum.join(i)
   end
 
-  defp update_map(map, word) do
-    {k, v} = String.split_at(word, 4)
-    case Map.fetch(map, k) do
-      {:ok, val} -> Map.put(map, k, val ++ [v])
-      :error -> Map.put(map, k, [v])
-    end
+  defp substitute(word) do
+    for <<letter <- word>>, do: Map.get(@sub_dict, <<letter>>, [<<letter>>])
+  end
+
+  defp product([h]), do: (for i <- h, do: [i])
+  defp product([h|t]) do
+    for i <- h, j <- product(t), do: [i|j]
   end
 end
