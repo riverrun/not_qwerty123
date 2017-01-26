@@ -4,6 +4,9 @@ defmodule NotQwerty123.PasswordStrengthTest do
   import NotQwerty123.PasswordStrength
 
   test "password default minimum length" do
+    assert strong_password?("4ghY&j23") == true
+    assert strong_password?("4ghY&j2") ==
+    "The password should be at least 8 characters long."
   end
 
   test "password minimum length config" do

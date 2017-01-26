@@ -27,7 +27,7 @@ defmodule NotQwerty123.GuessableTest do
     end
   end
 
-  test "repeated characters return message" do
+  test "repeated characters - up to 8 - easy to guess" do
     repeated = ["xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
                 "abcabcabcabcabcabcabc", "ababababababababababababababa",
                 "abcdabcdabcdabcd", "abcdeabcdeabcdeabcde",
@@ -37,6 +37,10 @@ defmodule NotQwerty123.GuessableTest do
     for id <- repeated do
       assert easy_guess?(id) == true
     end
+  end
+
+  test "9 repeated characters not easy to guess" do
+    assert easy_guess?("abcdefghiabcdefghiabcdefghiabcdefghi") == false
   end
 
   test "diffifult to guess passwords" do

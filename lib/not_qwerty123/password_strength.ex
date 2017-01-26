@@ -8,9 +8,6 @@ defmodule NotQwerty123.PasswordStrength do
   checking, such as [this Dropbox implementation](https://github.com/dropbox/zxcvbn)
   might be a better idea.
 
-  The `strong_password?` function checks that the password is long enough,
-  and it is not similar to any common passwords.
-
   # Password security and usability
 
   The following two sections will provide information about password strength
@@ -42,12 +39,6 @@ defmodule NotQwerty123.PasswordStrength do
   entropy is usually stronger than one with a lower entropy. However,
   even if the entropy is high, a password is weak if its guessability
   is high.
-
-  ## Password strength check
-
-  In this module's `strong_password?` function, the option common
-  is meant to keep the guessability low, and the option min_length
-  seeks to keep the entropy high.
 
   ## User attitudes and password security
 
@@ -86,35 +77,7 @@ defmodule NotQwerty123.PasswordStrength do
   There is one option:
 
     * min_length -- minimum allowable length of the password
-      * default is 12
-
-  ## Common passwords
-
-  If the password is found in the list of common passwords, then this function
-  will return a message saying that it is too weak because it is easy to guess.
-  This check will also check variations of the password with some of the
-  characters substituted. For example, for the common password `password`,
-  the words `P@$5w0Rd`, `p455w0rd`, `pA$sw0rD` (and many others) will also
-  be checked.
-
-  The user's password will also be checked with the first and / or last letter
-  removed. For example, the words `(p@$swoRd`, `p4ssw0rD3` and `^P455woRd9`
-  would also not be allowed as they are too similar to `password`.
-
-  This `common` option now includes a check for single and double-character
-  repetitions, such as '000000000000000000000' or 'ababababababababab'.
-
-  ## Examples
-
-  This example will check that the password is at least 8 characters long,
-  and that it is not similar to any word in the list of common passwords.
-
-      NotQwerty123.PasswordStrength.strong_password?("7Gr$cHs9")
-
-  The following example will check that the password is at least 16 characters
-  long.
-
-      NotQwerty123.PasswordStrength.strong_password?("verylongpassword", [min_length: 16])
+      * default is 8
 
   """
   def strong_password?(password, opts \\ []) do

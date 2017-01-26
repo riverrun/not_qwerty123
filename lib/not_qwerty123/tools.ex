@@ -14,7 +14,7 @@ defmodule NotQwerty123.Tools do
   }
 
   @doc """
-  Create the word list used in the common password strength check.
+  Create the word list used to test the guessability of a password.
   """
   def get_words do
     Path.join([__DIR__, "wordlists", "10k_6chars.txt"])
