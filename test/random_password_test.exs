@@ -2,7 +2,6 @@ defmodule NotQwerty123.RandomPasswordTest do
   use ExUnit.Case, async: true
 
   import NotQwerty123.RandomPassword
-  import NotQwerty123.PasswordStrength
 
   test "random password length" do
     assert gen_password(8) |> String.length == 8
@@ -16,10 +15,6 @@ defmodule NotQwerty123.RandomPasswordTest do
         gen_password(len)
       end
     end
-  end
-
-  test "stong password generated" do
-    assert gen_password() |> strong_password? == true
   end
 
 end

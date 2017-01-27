@@ -67,7 +67,8 @@ defmodule NotQwerty123.PasswordStrength do
 
   """
 
-  import NotQwerty123.{Gettext, Guessable}
+  import NotQwerty123.Gettext
+  alias NotQwerty123.WordlistManager
 
   @doc """
   Check the strength of the password.
@@ -83,8 +84,11 @@ defmodule NotQwerty123.PasswordStrength do
   def strong_password?(password, opts \\ []) do
     min_len = Keyword.get(opts, :min_length, 8)
     case long_enough?(String.length(password), min_len) do
-      true -> not_guessable?(password)
-      message -> message
+      true ->
+        easy_guess?(password) and
+        gettext("The password you have chosen is weak because it is easy to guess. " <>
+                "Please choose another one.") || true
+        message -> message
     end
   end
 
@@ -93,9 +97,9 @@ defmodule NotQwerty123.PasswordStrength do
   end
   defp long_enough?(_, _), do: true
 
-  defp not_guessable?(password) do
-    easy_guess?(password) and
-    gettext("The password you have chosen is weak because it is easy to guess. " <>
-     "Please choose another one.") || true
+  defp easy_guess?(password) do
+    key = String.downcase(password)
+    Regex.match?(~r/^.?(..?.?.?.?.?.?.?)(\1+).?$/, key) or
+    WordlistManager.query_wordlist(key)
   end
 end

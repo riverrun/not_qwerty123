@@ -11,4 +11,11 @@ defmodule NotQwerty123 do
     character, and it is not similar to any common passwords.
 
   """
+
+  use Application
+
+  @doc false
+  def start(_type, _args) do
+    NotQwerty123.Supervisor.start_link
+  end
 end
