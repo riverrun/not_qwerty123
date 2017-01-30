@@ -39,6 +39,18 @@ defmodule NotQwerty123.PasswordStrengthTest do
     end
   end
 
+  test "easy to guess reversed passwords with substitutions" do
+    for id <- ["o0dyb0o(5", "e21y+r3wq", "ez!4Hpl@"] do
+      assert strong_password?(id) =~ "password you have chosen is weak"
+    end
+  end
+
+  test "easy to guess reversed passwords with substitutions and an appended letter" do
+    for id <- ["R3reDn4wa", "1+n3mev4p", "@s0pir4m*"] do
+      assert strong_password?(id) =~ "password you have chosen is weak"
+    end
+  end
+
   test "repeated characters - up to 8 - easy to guess" do
     repeated = ["xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
                 "abcabcabcabcabcabcabc", "ababababababababababababababa",

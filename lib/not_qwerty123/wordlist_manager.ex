@@ -49,10 +49,11 @@ defmodule NotQwerty123.WordlistManager do
 
   defp run_check(wordlist, password) do
     words = list_alternatives(password)
-    (words ++ Enum.map(words, &String.slice(&1, 1..-1))
-     ++ Enum.map(words, &String.slice(&1, 0..-2))
-     ++ Enum.map(words, &String.slice(&1, 1..-2)))
-    |> Enum.any?(&:sets.is_element(&1, wordlist))
+    alternatives = (words ++ Enum.map(words, &String.slice(&1, 1..-1))
+                    ++ Enum.map(words, &String.slice(&1, 0..-2))
+                    ++ Enum.map(words, &String.slice(&1, 1..-2)))
+    reversed = Enum.map(alternatives, &String.reverse(&1))
+    Enum.any?(alternatives ++ reversed, &:sets.is_element(&1, wordlist))
   end
 
   defp list_alternatives(""), do: [""]
