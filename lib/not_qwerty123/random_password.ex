@@ -7,51 +7,58 @@ defmodule NotQwerty123.RandomPassword do
   do well and is something that computers are usually better at.
 
   The `gen_password` function generates a random password with letters,
-  digits and punctuation characters.
+  uppercase and lowercase, and with the option of using digits and / or
+  punctuation characters.
   """
 
   import NotQwerty123.PasswordStrength
 
-  @alpha Enum.concat ?A..?Z, ?a..?z
-  @alphabet '!#$%&\'()*+,-./:;<=>?@[\\]^_{|}~"' ++ @alpha ++ '0123456789'
+  @alpha Enum.concat(?A..?Z, ?a..?z)
+  @digits '0123456789'
+  @punc '!#$%&\'()*+,-./:;<=>?@[\\]^_{|}~"'
+  @alphabet @alpha ++ @digits ++ @punc
   @char_map Enum.map_reduce(@alphabet, 0, fn x, acc ->
     {{acc, x}, acc + 1} end) |> elem(0) |> Enum.into(%{})
 
   @doc """
   Randomly generate a password.
 
-  This function creates a random password that is guaranteed to contain
-  at least one digit and one punctuation character.
+  The default length of the password is 8 characters and the minimum
+  length is 6 characters.
 
-  The default length of the password is 12 characters and the minimum
-  length is 8 characters.
+  ## Options
+
+  There are two options:
+
+    * punctuation - include punctuation characters
+      * the default is true
+    * digits - include digits
+      * the default is true
+      * setting digits to false automatically sets punctuation to false
+
   """
-  def gen_password(len \\ 12)
-  def gen_password(len) when len > 7 do
-    rand_password(len) |> to_string() |> ensure_strong(len)
+  def gen_password(len \\ 8, opts \\ [])
+  def gen_password(len, opts) when len > 5 do
+    (for val <- rand_numbers(len, opts), do: Map.get(@char_map, val))
+    |> to_string() |> ensure_strong(len, opts)
   end
-  def gen_password(_) do
-    raise ArgumentError, message: "The password should be at least 8 characters long."
+  def gen_password(_, _) do
+    raise ArgumentError, message: "The password should be at least 6 characters long."
   end
 
-  defp rand_password(len) do
-    case rand_numbers(len) |> punc_digit?() do
-      false -> rand_password(len)
-      code -> for val <- code, do: Map.get(@char_map, val)
+  defp rand_numbers(len, opts) do
+    end_range = case {opts[:digits], opts[:punctuation]} do
+      {false, _} -> 52
+      {_, false} -> 62
+      _ -> 93
     end
-  end
-  defp rand_numbers(len) do
-    for _ <- 1..len, do: :crypto.rand_uniform(0, 93)
-  end
-  defp punc_digit?(code) do
-    Enum.any?(code, &(&1 < 31)) and Enum.any?(code, &(&1 > 82)) and code
+    for _ <- 1..len, do: :crypto.rand_uniform(0, end_range)
   end
 
-  defp ensure_strong(password, len) do
+  defp ensure_strong(password, len, opts) do
     case strong_password?(password) do
       true -> password
-      _ -> gen_password(len)
+      _ -> gen_password(len, opts)
     end
   end
-
 end
