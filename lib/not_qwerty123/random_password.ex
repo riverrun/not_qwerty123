@@ -6,9 +6,8 @@ defmodule NotQwerty123.RandomPassword do
   However, creating truly random passwords is difficult for people to
   do well and is something that computers are usually better at.
 
-  The `gen_password` function generates a random password with letters,
-  uppercase and lowercase, and with the option of using digits and / or
-  punctuation characters.
+  This module provides the `gen_password` function, which generates
+  a random password.
   """
 
   import NotQwerty123.PasswordStrength
@@ -21,7 +20,7 @@ defmodule NotQwerty123.RandomPassword do
     {{acc, x}, acc + 1} end) |> elem(0) |> Enum.into(%{})
 
   @doc """
-  Randomly generate a password.
+  Generate a random password.
 
   ## Options
 
@@ -31,10 +30,10 @@ defmodule NotQwerty123.RandomPassword do
       * the default is 8
       * the minimum length is 6
     * characters - the character set - `:letters`, `:letters_digits` or `:letters_digits_punc`
-      * `:letters` will just use uppercase and lowercase letters in the password
-      * `:letters_digits` will use letters and digits
+      * the default is `:letters_digits`, which will use letters and digits in the password
+      * `:digits` will only use digits
+      * `:letters` will use uppercase and lowercase letters
       * `:letters_digits_punc` will use letters, digits and punctuation characters
-      * the default is `:letters_digits_punc`
 
   """
   def gen_password(opts \\ [])
@@ -46,12 +45,13 @@ defmodule NotQwerty123.RandomPassword do
   end
 
   defp rand_numbers(len, chars) when len > 5 do
-    end_range = case chars do
-      :letters -> 52
-      :letters_digits -> 62
-      _ -> 93
+    {start_range, end_range} = case chars do
+      :digits -> {52, 62}
+      :letters -> {0, 52}
+      :letters_digits_punc -> {0, 93}
+      _ -> {0, 62}
     end
-    for _ <- 1..len, do: :crypto.rand_uniform(0, end_range)
+    for _ <- 1..len, do: :crypto.rand_uniform(start_range, end_range)
   end
   defp rand_numbers(_, _) do
     raise ArgumentError, message: "The password should be at least 6 characters long."

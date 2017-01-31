@@ -31,4 +31,11 @@ defmodule NotQwerty123.RandomPasswordTest do
     end
   end
 
+  test "random password with just digits" do
+    for _ <- 1..100 do
+      key = gen_password(characters: :digits)
+      assert Regex.match?(~r/^[0-9]*$/, key)
+    end
+  end
+
 end
