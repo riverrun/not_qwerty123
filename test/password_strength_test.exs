@@ -1,5 +1,5 @@
 defmodule NotQwerty123.PasswordStrengthTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
 
   import NotQwerty123.PasswordStrength
 

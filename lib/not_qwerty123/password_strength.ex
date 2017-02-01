@@ -100,6 +100,6 @@ defmodule NotQwerty123.PasswordStrength do
   defp easy_guess?(password) do
     key = String.downcase(password)
     Regex.match?(~r/^.?(..?.?.?.?.?.?.?)(\1+).?$/, key) or
-    WordlistManager.query_wordlist(key)
+    WordlistManager.query(key)
   end
 end

@@ -1,5 +1,6 @@
 defmodule NotQwerty123.I18nTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
+
   import NotQwerty123.PasswordStrength
 
   test "gettext returns English message for default locale" do

@@ -18,14 +18,19 @@ defmodule NotQwerty123.WordlistManager do
   end
 
   def init([]) do
-    filename = Path.join(@wordlist_path, "10k_6chars.txt")
-    state = add_words(filename)
+    state = File.ls!(@wordlist_path)
+            |> Enum.map(&Path.join(@wordlist_path, &1)
+                        |> File.read!
+                        |> add_words)
+            |> :sets.union
     {:ok, state}
   end
 
   def get_state(), do: GenServer.call(__MODULE__, :get_state)
 
-  def query_wordlist(password), do: GenServer.call(__MODULE__, {:query, password})
+  def query(password), do: GenServer.call(__MODULE__, {:query, password})
+
+  def push(filename), do: GenServer.cast(__MODULE__, {:push, filename})
 
   def handle_call(:get_state, _from, state) do
     {:reply, state, state}
@@ -34,13 +39,20 @@ defmodule NotQwerty123.WordlistManager do
     {:reply, run_check(state, password), state}
   end
 
+  def handle_cast({:push, filename}, state) do
+    new_state = case File.read filename do
+      {:ok, words} -> add_words(words) |> :sets.union(state)
+      {:error, _message} -> state
+    end
+    {:noreply, new_state}
+  end
+
   def handle_info(_msg, state) do
     {:noreply, state}
   end
 
-  defp add_words(filename) do
-    filename
-    |> File.read!
+  defp add_words(data) do
+    data
     |> String.downcase
     |> String.split("\n")
     |> Enum.flat_map(&list_alternatives/1)

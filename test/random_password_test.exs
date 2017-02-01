@@ -1,5 +1,5 @@
 defmodule NotQwerty123.RandomPasswordTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
 
   import NotQwerty123.RandomPassword
 
