@@ -3,6 +3,12 @@ defmodule NotQwerty123.PasswordStrengthTest do
 
   import NotQwerty123.PasswordStrength
 
+  defp read_file(filename) do
+    Path.expand("support/#{filename}.txt", __DIR__)
+    |> File.read!
+    |> String.split("\n", trim: true)
+  end
+
   test "password default minimum length" do
     assert strong_password?("4ghY&j23") == true
     assert strong_password?("4ghY&j2") ==
@@ -28,26 +34,32 @@ defmodule NotQwerty123.PasswordStrengthTest do
   end
 
   test "easy to guess passwords with substitutions" do
-    for id <- ["5(o0byd0o", "qw3r+y12e", "@lpH4!ze"] do
-      assert strong_password?(id) =~ "password you have chosen is weak"
+    for id <- read_file("substitutions") do
+      assert strong_password?(id, min_length: 6) =~ "password you have chosen is weak"
+    end
+  end
+
+  test "easy to guess passwords with substitutions and an prepended letter" do
+    for id <- read_file("prepend") do
+      assert strong_password?(id, min_length: 6) =~ "password you have chosen is weak"
     end
   end
 
   test "easy to guess passwords with substitutions and an appended letter" do
-    for id <- ["aw4nDer3R", "p4vem3n+1", "*m4rip0s@"] do
-      assert strong_password?(id) =~ "password you have chosen is weak"
+    for id <- read_file("append") do
+      assert strong_password?(id, min_length: 6) =~ "password you have chosen is weak"
+    end
+  end
+
+  test "easy to guess passwords with substitutions and letters added to start and end" do
+    for id <- read_file("preappend") do
+      assert strong_password?(id, min_length: 6) =~ "password you have chosen is weak"
     end
   end
 
   test "easy to guess reversed passwords with substitutions" do
-    for id <- ["o0dyb0o(5", "e21y+r3wq", "ez!4Hpl@"] do
-      assert strong_password?(id) =~ "password you have chosen is weak"
-    end
-  end
-
-  test "easy to guess reversed passwords with substitutions and an appended letter" do
-    for id <- ["R3reDn4wa", "1+n3mev4p", "@s0pir4m*"] do
-      assert strong_password?(id) =~ "password you have chosen is weak"
+    for id <- read_file("reversed") do
+      assert strong_password?(id, min_length: 6) =~ "password you have chosen is weak"
     end
   end
 
@@ -67,9 +79,9 @@ defmodule NotQwerty123.PasswordStrengthTest do
     assert strong_password?("abcdefghiabcdefghiabcdefghiabcdefghi") == true
   end
 
-  test "diffifult to guess passwords" do
-    for id <- ["8(o0b$d0o", "Gw3r+y12e", "@lT#4z!e"] do
-      assert strong_password?(id) == true
+  test "difficult to guess passwords" do
+    for id <- read_file("allowed") do
+      assert strong_password?(id, min_length: 6) == true
     end
   end
 
