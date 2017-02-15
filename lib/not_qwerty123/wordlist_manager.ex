@@ -89,6 +89,9 @@ defmodule NotQwerty123.WordlistManager do
     {:noreply, new_state}
   end
 
+  def handle_cast({:pop, "common_passwords.txt"}, state) do
+    {:noreply, state}
+  end
   def handle_cast({:pop, path}, state) do
     new_state = case File.rm(Path.join(@wordlist_dir, path)) do
       :ok -> create_list()
