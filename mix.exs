@@ -10,7 +10,7 @@ defmodule NotQwerty123.Mixfile do
   def project do
     [app: :not_qwerty123,
      version: @version,
-     elixir: "~> 1.2",
+     elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      name: "NotQwerty123",
@@ -22,7 +22,8 @@ defmodule NotQwerty123.Mixfile do
   end
 
   def application do
-    [applications: [:gettext, :logger]]
+    [extra_applications: [:logger],
+     mod: {NotQwerty123, []}]
   end
 
   defp deps do

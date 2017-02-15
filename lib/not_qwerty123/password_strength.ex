@@ -10,18 +10,20 @@ defmodule NotQwerty123.PasswordStrength do
 
   ## Password strength
 
-  Password strength depends on how long a password is and how easy it
-  is to guess it. In most cases, passwords should be at least 8
-  characters long, and they should not be similar to common passwords,
-  like `password` or `qwerty123`, or consist of repeated characters,
-  like `abcabcabcabc`. Dictionary words, common names and user-specific
-  words (company name, address, etc.) should also be avoided.
+  In simple terms, password strength depends on how long a password is
+  and how easy it is to guess it. In most cases, passwords should be at
+  least 8 characters long, and they should not be similar to common
+  passwords, like `password` or `qwerty123`, or consist of repeated
+  characters, like `abcabcabcabc`. Dictionary words, common names
+  and user-specific words (company name, address, etc.) should also
+  be avoided.
 
-  It is important to note that these guidelines apply to online attacks,
-  where the number of password attempts is limited. With offline attacks,
-  in the case of a database leak for example, it will be far easier for
-  an attacker to find the password, and you might want to protect against
-  that by adopting more stringent password guidelines.
+  It is important to note that these guidelines, especially those regarding
+  password length, apply to online attacks, where the number of password
+  attempts is limited. With offline attacks, in the case of a database leak
+  for example, it will be far easier for an attacker to find the password,
+  and you might want to protect against that by adopting more stringent
+  password guidelines.
 
   ## Further information
 
