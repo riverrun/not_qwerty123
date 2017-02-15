@@ -58,7 +58,7 @@ defmodule NotQwerty123.RandomPassword do
 
   defp ensure_strong(password, opts) do
     case strong_password?(password) do
-      true -> password
+      {:ok, password} -> password
       _ -> gen_password(opts)
     end
   end

@@ -38,6 +38,8 @@ defmodule NotQwerty123.PasswordStrength do
   @doc """
   Check the strength of the password.
 
+  It returns {:ok, password} or {:error, message}
+
   The password is checked to make sure that it is not too short and
   that it is not similar to any word in the common password list.
   See the documentation for NotQwerty123.WordlistManager for
@@ -55,10 +57,13 @@ defmodule NotQwerty123.PasswordStrength do
     min_len = Keyword.get(opts, :min_length, 8)
     case long_enough?(String.length(password), min_len) do
       true ->
-        easy_guess?(password) and
-        gettext("The password you have chosen is weak because it is easy to guess. " <>
-                "Please choose another one.") || true
-        message -> message
+        if easy_guess?(password) do
+          {:error, gettext("The password you have chosen is weak because it is easy to guess. " <>
+                             "Please choose another one.")}
+        else
+          {:ok, password}
+        end
+      message -> {:error, message}
     end
   end
 

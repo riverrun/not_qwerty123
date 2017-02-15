@@ -10,56 +10,65 @@ defmodule NotQwerty123.PasswordStrengthTest do
   end
 
   test "password default minimum length" do
-    assert strong_password?("4ghY&j23") == true
-    assert strong_password?("4ghY&j2") ==
-    "The password should be at least 8 characters long."
+    {:ok, password} = strong_password?("4ghY&j23")
+    assert password == "4ghY&j23"
+    {:error, message} = strong_password?("4ghY&j2")
+    assert message =~ "password should be at least 8 characters long"
   end
 
   test "password minimum length config" do
-    assert strong_password?("4ghY&j2", [min_length: 6]) == true
-    assert strong_password?("4ghY&j2", [min_length: 8]) ==
-    "The password should be at least 8 characters long."
+    {:ok, password} = strong_password?("4ghY&j2", min_length: 6)
+    assert password == "4ghY&j2"
+    {:error, message} = strong_password?("4ghY&j2", [min_length: 8])
+    assert message =~ "password should be at least 8 characters long"
   end
 
   test "easy to guess passwords" do
     for id <- ["password", "qwertyuiop", "excalibur"] do
-      assert strong_password?(id) =~ "password you have chosen is weak"
+      {:error, message} = strong_password?(id, min_length: 6)
+      assert message =~ "password you have chosen is weak"
     end
   end
 
   test "easy to guess passwords with uppercase letters" do
     for id <- ["aSSaSsin", "DolPHIns", "sTaRwArS"] do
-      assert strong_password?(id) =~ "password you have chosen is weak"
+      {:error, message} = strong_password?(id, min_length: 6)
+      assert message =~ "password you have chosen is weak"
     end
   end
 
   test "easy to guess passwords with substitutions" do
     for id <- read_file("substitutions") do
-      assert strong_password?(id, min_length: 6) =~ "password you have chosen is weak"
+      {:error, message} = strong_password?(id, min_length: 6)
+      assert message =~ "password you have chosen is weak"
     end
   end
 
   test "easy to guess passwords with substitutions and an prepended letter" do
     for id <- read_file("prepend") do
-      assert strong_password?(id, min_length: 6) =~ "password you have chosen is weak"
+      {:error, message} = strong_password?(id, min_length: 6)
+      assert message =~ "password you have chosen is weak"
     end
   end
 
   test "easy to guess passwords with substitutions and an appended letter" do
     for id <- read_file("append") do
-      assert strong_password?(id, min_length: 6) =~ "password you have chosen is weak"
+      {:error, message} = strong_password?(id, min_length: 6)
+      assert message =~ "password you have chosen is weak"
     end
   end
 
   test "easy to guess passwords with substitutions and letters added to start and end" do
     for id <- read_file("preappend") do
-      assert strong_password?(id, min_length: 6) =~ "password you have chosen is weak"
+      {:error, message} = strong_password?(id, min_length: 6)
+      assert message =~ "password you have chosen is weak"
     end
   end
 
   test "easy to guess reversed passwords with substitutions" do
     for id <- read_file("reversed") do
-      assert strong_password?(id, min_length: 6) =~ "password you have chosen is weak"
+      {:error, message} = strong_password?(id, min_length: 6)
+      assert message =~ "password you have chosen is weak"
     end
   end
 
@@ -73,7 +82,10 @@ defmodule NotQwerty123.PasswordStrengthTest do
                "abcdefghABCDEFGHabcdefghABCDEFGH",
                "abcabcabcabcabcabca",
                "abcdeabcdeabcdeab"
-             ], do: assert strong_password?(id) =~ "password you have chosen is weak"
+             ] do
+              {:error, message} = strong_password?(id)
+              assert message =~ "password you have chosen is weak"
+             end
   end
 
   test "not repeated characters - should return true" do
@@ -82,12 +94,16 @@ defmodule NotQwerty123.PasswordStrengthTest do
                "abcdabcadbcdabcd",
                "abcdeacbdeabcdeabcde",
                "abcdefABCEDFabcdefABCDEF"
-             ], do: assert strong_password?(id)
+             ] do
+              {:ok, password} = strong_password?(id)
+              assert password == id
+             end
   end
 
   test "difficult to guess passwords" do
     for id <- read_file("allowed") do
-      assert strong_password?(id, min_length: 6) == true
+      {:ok, password} = strong_password?(id, min_length: 6)
+      assert password == id
     end
   end
 
