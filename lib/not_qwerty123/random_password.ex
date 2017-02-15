@@ -1,6 +1,6 @@
 defmodule NotQwerty123.RandomPassword do
   @moduledoc """
-  Module to generate random passwords and check password strength.
+  Module to generate random passwords.
 
   Users are often advised to use random passwords for authentication.
   However, creating truly random passwords is difficult for people to
@@ -36,8 +36,7 @@ defmodule NotQwerty123.RandomPassword do
       * `:letters_digits_punc` will use letters, digits and punctuation characters
 
   """
-  def gen_password(opts \\ [])
-  def gen_password(opts) do
+  def gen_password(opts \\ []) do
     {len, chars} = {Keyword.get(opts, :length, 8),
       Keyword.get(opts, :characters, :letters_digits_punc)}
     (for val <- rand_numbers(len, chars), do: Map.get(@char_map, val))

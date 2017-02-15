@@ -63,20 +63,26 @@ defmodule NotQwerty123.PasswordStrengthTest do
     end
   end
 
-  test "repeated characters - up to 8 - easy to guess" do
-    repeated = ["xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-                "abcabcabcabcabcabcabc", "ababababababababababababababa",
-                "abcdabcdabcdabcd", "abcdeabcdeabcdeabcde",
-                "abcdefABCDEFabcdefABCDEF",
-                "abcdefgABCDEFGabcdefgABCDEFG",
-                "abcdefghABCDEFGHabcdefghABCDEFGH"]
-    for id <- repeated do
-      assert strong_password?(id) =~ "password you have chosen is weak"
-    end
+  test "repeated characters easy to guess" do
+    for id <- ["xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+               "abcabcabcabcabcabcabc",
+               "abcdabcdabcdabcd",
+               "abcdeabcdeabcdeabcde",
+               "abcdefABCDEFabcdefABCDEF",
+               "abcdefgABCDEFGabcdefgABCDEFG",
+               "abcdefghABCDEFGHabcdefghABCDEFGH",
+               "abcabcabcabcabcabca",
+               "abcdeabcdeabcdeab"
+             ], do: assert strong_password?(id) =~ "password you have chosen is weak"
   end
 
-  test "9 repeated characters not easy to guess" do
-    assert strong_password?("abcdefghiabcdefghiabcdefghiabcdefghi") == true
+  test "not repeated characters - should return true" do
+    for id <- ["abcabcacbabcabcabcabc",
+               "abababababaabbabababababababa",
+               "abcdabcadbcdabcd",
+               "abcdeacbdeabcdeabcde",
+               "abcdefABCEDFabcdefABCDEF"
+             ], do: assert strong_password?(id)
   end
 
   test "difficult to guess passwords" do

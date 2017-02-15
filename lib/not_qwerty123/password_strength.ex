@@ -8,62 +8,25 @@ defmodule NotQwerty123.PasswordStrength do
   checking, such as [this Dropbox implementation](https://github.com/dropbox/zxcvbn)
   might be a better idea.
 
-  # Password security and usability
-
-  The following two sections will provide information about password strength
-  and user attitudes to password guidelines.
-
-  If you are checking password strength and not allowing passwords because
-  they are too weak, then you need to take the users' attitudes into account.
-  If the users find the process of creating passwords too difficult, they
-  are likely to find ways of bending the rules you set, and this might have
-  a negative impact on password security.
-
   ## Password strength
 
-  This section will look at how `guessability` and `entropy` relate to
-  password strength.
+  Password strength depends on how long a password is and how easy it
+  is to guess it. In most cases, passwords should be at least 8
+  characters long, and they should not be similar to common passwords,
+  like `password` or `qwerty123`, or consist of repeated characters,
+  like `abcabcabcabc`. Dictionary words, common names and user-specific
+  words (company name, address, etc.) should also be avoided.
 
-  Guessability is how easy it is for a potential attacker to guess or
-  work out what the password is. An attacker is likely to start an
-  attempt to guess a password by using common words and common patterns,
-  like sequences of characters or repeated characters. A password is strong
-  if its guessability is low, that is, if it does not contain such predictable
-  patterns.
-
-  Entropy refers to the number of combinations that a password
-  with a certain character set and a certain length would have. In
-  simple terms, the longer the password is, the greater the entropy.
-
-  Entropy is related to password strength, and a password with a higher
-  entropy is usually stronger than one with a lower entropy. However,
-  even if the entropy is high, a password is weak if its guessability
-  is high.
-
-  ## User attitudes and password security
-
-  It is becoming more and more impractical for users to remember the
-  many passwords they need, especially as it is recommended that they
-  use a different, strong (often difficult to remember) password for
-  each service. As a result, it is likely that many users will choose
-  to either use the same password for many services, or use weaker,
-  easy to remember passwords.
-
-  One solution to this problem is to have users write down their
-  passwords. The obvious problem with this solution is that the
-  password can be stolen. It is therefore important that the user
-  keeps the password in a safe place and treats its loss seriously.
-
-  Another solution is for the users to use password managers.
-  This is a valid solution as long as the password managers themselves
-  are secure. See
-  [Security of password managers](https://www.schneier.com/blog/archives/2014/09/security_of_pas.html)
-  for more information.
+  It is important to note that these guidelines apply to online attacks,
+  where the number of password attempts is limited. With offline attacks,
+  in the case of a database leak for example, it will be far easier for
+  an attacker to find the password, and you might want to protect against
+  that by adopting more stringent password guidelines.
 
   ## Further information
 
   Visit the [Comeonin wiki](https://github.com/elixircnx/comeonin/wiki)
-  for links to further information about these and related issues.
+  for links to further information about password-related issues.
 
   """
 
@@ -73,11 +36,16 @@ defmodule NotQwerty123.PasswordStrength do
   @doc """
   Check the strength of the password.
 
+  The password is checked to make sure that it is not too short and
+  that it is not similar to any word in the common password list.
+  See the documentation for NotQwerty123.WordlistManager for
+  information about customizing the common password list.
+
   ## Options
 
   There is one option:
 
-    * min_length -- minimum allowable length of the password
+    * min_length - minimum allowable length of the password
       * default is 8
 
   """

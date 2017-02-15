@@ -1,7 +1,30 @@
 defmodule NotQwerty123.WordlistManager do
+  @moduledoc """
+  Module to manage the common password list and handle password checks.
+
+  The main function that NotQwerty123 performs is to check that the
+  password, and several transformations of the password, is not in
+  the list of common passwords that this WordlistManager stores.
+
+  By default, this common password list contains one file, which
+  is a list of over 40,000 common passwords in it. This provides
+  a good basis for the password check, but it can also be useful
+  to add other words to this list, especially words associated
+  with the site you are managing.
+
+  ## Managing the common password list
+
+  The following functions can be used to manage this list:
+
+    * list_wordlists/0 - list the files used to create the wordlist
+    * push/1 - add a file to the wordlist
+    * pop/1 - remove a file from the wordlist
+
+  """
+
   use GenServer
 
-  @wordlist_path Path.join(Application.app_dir(:not_qwerty123, "priv"), "wordlists")
+  @wordlist_dir Path.join(Application.app_dir(:not_qwerty123, "priv"), "wordlists")
 
   @sub_dict %{
     "!" => ["i"], "@" => ["a"], "$" => ["s"],
@@ -18,37 +41,72 @@ defmodule NotQwerty123.WordlistManager do
   end
 
   def init([]) do
-    state = File.ls!(@wordlist_path)
-            |> Enum.map(&Path.join(@wordlist_path, &1)
-                        |> File.read!
-                        |> add_words)
-            |> :sets.union
-    {:ok, state}
+    {:ok, create_list()}
   end
 
-  def get_state(), do: GenServer.call(__MODULE__, :get_state)
-
+  @doc false
   def query(password), do: GenServer.call(__MODULE__, {:query, password})
 
-  def push(filename), do: GenServer.cast(__MODULE__, {:push, filename})
+  @doc """
+  List the files used to create the common password list.
+  """
+  def list_files, do: GenServer.call(__MODULE__, :list_files)
 
-  def handle_call(:get_state, _from, state) do
-    {:reply, state, state}
-  end
+  @doc """
+  Add a file to the common password list.
+
+  `path` is the pathname of the file, which should contain one
+  password on each line, that you want to include.
+
+  The file is parsed and the words are added to the common password
+  list. A copy of the file is also copied to the
+  not_qwerty123/priv/wordlists directory.
+  """
+  def push(path), do: GenServer.cast(__MODULE__, {:push, path})
+
+  @doc """
+  Remove a file from the common password list.
+
+  `path` is the file name as it is printed out in the `list_files`
+  function.
+  """
+  def pop(path), do: GenServer.cast(__MODULE__, {:pop, path})
+
   def handle_call({:query, password}, _from, state) do
     {:reply, run_check(state, password), state}
   end
+  def handle_call(:list_files, _from, state) do
+    {:reply, File.ls!(@wordlist_dir), state}
+  end
 
-  def handle_cast({:push, filename}, state) do
-    new_state = case File.read filename do
-      {:ok, words} -> add_words(words) |> :sets.union(state)
-      {:error, _message} -> state
+  def handle_cast({:push, path}, state) do
+    new_state = case File.read path do
+      {:ok, words} ->
+        Path.join(@wordlist_dir, Path.basename(path)) |> File.write(words)
+        add_words(words) |> :sets.union(state)
+      _ -> state
+    end
+    {:noreply, new_state}
+  end
+
+  def handle_cast({:pop, path}, state) do
+    new_state = case File.rm(Path.join(@wordlist_dir, path)) do
+      :ok -> create_list()
+      _ -> state
     end
     {:noreply, new_state}
   end
 
   def handle_info(_msg, state) do
     {:noreply, state}
+  end
+
+  defp create_list do
+    File.ls!(@wordlist_dir)
+    |> Enum.map(&Path.join(@wordlist_dir, &1)
+                |> File.read!
+                |> add_words)
+    |> :sets.union
   end
 
   defp add_words(data) do
