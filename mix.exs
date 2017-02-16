@@ -1,7 +1,7 @@
 defmodule NotQwerty123.Mixfile do
   use Mix.Project
 
-  @version "1.2.0"
+  @version "2.0.0"
 
   @description """
   Library to check password strength and generate random passwords.
@@ -10,7 +10,7 @@ defmodule NotQwerty123.Mixfile do
   def project do
     [app: :not_qwerty123,
      version: @version,
-     elixir: "~> 1.2",
+     elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      name: "NotQwerty123",
@@ -22,13 +22,14 @@ defmodule NotQwerty123.Mixfile do
   end
 
   def application do
-    [applications: [:gettext, :logger]]
+    [extra_applications: [:logger],
+     mod: {NotQwerty123, []}]
   end
 
   defp deps do
     [{:gettext, "~> 0.11"},
-     {:earmark, "~> 0.2", only: :dev},
-     {:ex_doc,  "~> 0.12", only: :dev}]
+     {:earmark, "~> 1.1", only: :dev},
+     {:ex_doc,  "~> 0.14", only: :dev}]
   end
 
   defp package do
