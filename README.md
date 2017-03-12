@@ -20,3 +20,8 @@ The package can be installed as:
         def deps do
           [{:not_qwerty123, "~> 2.0"}]
         end
+  2. List `not_qwerty123` as an application dependency:
+  
+        def application do
+          [applications: [:logger, :not_qwerty123]]
+        end
