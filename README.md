@@ -32,3 +32,7 @@ The package can be installed as:
           [extra_applications: [:logger]]
         end
 
+    or add `not_qwerty123` to the `applications` list.
+
+See [Elixir 1.4 release notes](http://elixir-lang.org/blog/2017/01/05/elixir-v1-4-0-released/#application-inference)
+for details.
