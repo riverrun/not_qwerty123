@@ -15,13 +15,20 @@ Make sure you are using Elixir 1.4 or above.
 
 The package can be installed as:
 
-  1. Add not_qwerty123 to your list of dependencies in `mix.exs`:
+  1. Add `not_qwerty123` to your list of dependencies in `mix.exs`:
 
         def deps do
           [{:not_qwerty123, "~> 2.0"}]
         end
-  2. List `not_qwerty123` as an application dependency:
-  
+  2. If updating a pre-Elixir 1.4 app, make sure you change:
+
         def application do
-          [applications: [:logger, :not_qwerty123]]
+          [applications: [:logger]]
         end
+
+    to:
+
+        def application do
+          [extra_applications: [:logger]]
+        end
+

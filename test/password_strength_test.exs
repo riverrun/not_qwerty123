@@ -107,4 +107,11 @@ defmodule NotQwerty123.PasswordStrengthTest do
     end
   end
 
+  test "randomly generated passwords" do
+    for id <- read_file("random") do
+      {:ok, password} = strong_password?(id)
+      assert password == id
+    end
+  end
+
 end
