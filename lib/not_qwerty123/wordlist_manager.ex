@@ -24,8 +24,6 @@ defmodule NotQwerty123.WordlistManager do
 
   use GenServer
 
-  @wordlist_dir Path.join(Application.app_dir(:not_qwerty123, "priv"), "wordlists")
-
   @sub_dict %{
     "!" => ["i"], "@" => ["a"], "$" => ["s"],
     "%" => ["x"], "(" => ["c"], "[" => ["c"],
@@ -76,13 +74,13 @@ defmodule NotQwerty123.WordlistManager do
     {:reply, run_check(state, password), state}
   end
   def handle_call(:list_files, _from, state) do
-    {:reply, File.ls!(@wordlist_dir), state}
+    {:reply, File.ls!(wordlist_dir()), state}
   end
 
   def handle_cast({:push, path}, state) do
     new_state = case File.read path do
       {:ok, words} ->
-        Path.join(@wordlist_dir, Path.basename(path)) |> File.write(words)
+        Path.join(wordlist_dir(), Path.basename(path)) |> File.write(words)
         add_words(words) |> :sets.union(state)
       _ -> state
     end
@@ -93,7 +91,7 @@ defmodule NotQwerty123.WordlistManager do
     {:noreply, state}
   end
   def handle_cast({:pop, path}, state) do
-    new_state = case File.rm(Path.join(@wordlist_dir, path)) do
+    new_state = case File.rm(Path.join(wordlist_dir(), path)) do
       :ok -> create_list()
       _ -> state
     end
@@ -104,9 +102,11 @@ defmodule NotQwerty123.WordlistManager do
     {:noreply, state}
   end
 
+  defp wordlist_dir(), do: Application.app_dir(:not_qwerty123, ~w(priv wordlists))
+
   defp create_list do
-    File.ls!(@wordlist_dir)
-    |> Enum.map(&Path.join(@wordlist_dir, &1)
+    File.ls!(wordlist_dir())
+    |> Enum.map(&Path.join(wordlist_dir(), &1)
                 |> File.read!
                 |> add_words)
     |> :sets.union
