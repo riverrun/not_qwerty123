@@ -27,9 +27,9 @@ defmodule NotQwerty123.Mixfile do
   end
 
   defp deps do
-    [{:gettext, "~> 0.11"},
-     {:earmark, "~> 1.1", only: :dev},
-     {:ex_doc,  "~> 0.14", only: :dev}]
+    [{:gettext, "~> 0.13"},
+     {:earmark, "~> 1.2", only: :dev},
+     {:ex_doc,  "~> 0.16", only: :dev}]
   end
 
   defp package do
