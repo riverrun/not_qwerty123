@@ -17,6 +17,14 @@ defmodule NotQwerty123.RandomPasswordTest do
     end
   end
 
+  test "default options for gen_password" do
+    for _ <- 1..100 do
+      key = gen_password()
+      assert String.length(key) == 8
+      assert Regex.match?(~r/^[a-zA-Z0-9]*$/, key)
+    end
+  end
+
   test "random password with letters and digits" do
     for _ <- 1..100 do
       key = gen_password(characters: :letters_digits)

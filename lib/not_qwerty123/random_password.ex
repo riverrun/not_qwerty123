@@ -38,7 +38,7 @@ defmodule NotQwerty123.RandomPassword do
   """
   def gen_password(opts \\ []) do
     {len, chars} = {Keyword.get(opts, :length, 8),
-      Keyword.get(opts, :characters, :letters_digits_punc)}
+      Keyword.get(opts, :characters, :letters_digits)}
     (for val <- rand_numbers(len, chars), do: Map.get(@char_map, val))
     |> to_string() |> ensure_strong(opts)
   end
@@ -50,7 +50,8 @@ defmodule NotQwerty123.RandomPassword do
       :letters_digits_punc -> {0, 93}
       _ -> {0, 62}
     end
-    for _ <- 1..len, do: :crypto.rand_uniform(start_range, end_range)
+    :crypto.rand_seed()
+    for _ <- 1..len, do: Enum.random(start_range..end_range - 1)
   end
   defp rand_numbers(_, _) do
     raise ArgumentError, message: "The password should be at least 6 characters long."
