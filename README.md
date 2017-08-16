@@ -18,7 +18,7 @@ The package can be installed as:
   1. Add `not_qwerty123` to your list of dependencies in `mix.exs`:
 
         def deps do
-          [{:not_qwerty123, "~> 2.0"}]
+          [{:not_qwerty123, "~> 2.1"}]
         end
   2. If updating a pre-Elixir 1.4 app, make sure you change:
 
