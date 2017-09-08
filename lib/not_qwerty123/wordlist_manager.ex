@@ -42,8 +42,13 @@ defmodule NotQwerty123.WordlistManager do
     {:ok, create_list()}
   end
 
-  @doc false
-  def query(password), do: GenServer.call(__MODULE__, {:query, password})
+  @doc """
+  Search the wordlist to see if the password is too common.
+  """
+  def query(password, word_len) when word_len < 33 do
+    GenServer.call(__MODULE__, {:query, password})
+  end
+  def query(_, _), do: true
 
   @doc """
   List the files used to create the common password list.

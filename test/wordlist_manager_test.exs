@@ -6,25 +6,25 @@ defmodule NotQwerty123.WordlistManagerTest do
   @new_words Path.expand("support/extra_wordlist.txt", __DIR__)
 
   test "all wordlist files added to state" do
-    assert WM.query("p@$$w0rd") == true
-    assert WM.query("p@$$w0rd123") == true
+    assert WM.query("p@$$w0rd", 8) == true
+    assert WM.query("p@$$w0rd123", 11) == true
   end
 
   test "can add new wordlist to state" do
-    assert WM.query("sparebutton") == false
+    assert WM.query("sparebutton", 11) == false
     WM.push @new_words
-    assert WM.query("p@$$w0rd") == true
-    assert WM.query("sparebutton") == true
+    assert WM.query("p@$$w0rd", 8) == true
+    assert WM.query("sparebutton", 11) == true
   after
     WM.pop "extra_wordlist.txt"
   end
 
   test "can remove wordlist from state" do
     WM.push @new_words
-    assert WM.query("sparebutton") == true
+    assert WM.query("sparebutton", 11) == true
     WM.pop "extra_wordlist.txt"
-    assert WM.query("pa$$w0rd") == true
-    assert WM.query("sparebutton") == false
+    assert WM.query("pa$$w0rd", 8) == true
+    assert WM.query("sparebutton", 11) == false
   end
 
   test "list wordlists" do
