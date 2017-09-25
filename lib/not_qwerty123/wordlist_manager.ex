@@ -44,11 +44,14 @@ defmodule NotQwerty123.WordlistManager do
 
   @doc """
   Search the wordlist to see if the password is too common.
+
+  If the password is greater than 24 characters long, this
+  function returns false without performing any checks.
   """
-  def query(password, word_len) when word_len < 33 do
+  def query(password, word_len) when word_len < 25 do
     GenServer.call(__MODULE__, {:query, password})
   end
-  def query(_, _), do: true
+  def query(_, _), do: false
 
   @doc """
   List the files used to create the common password list.
@@ -64,6 +67,9 @@ defmodule NotQwerty123.WordlistManager do
   The file is parsed and the words are added to the common password
   list. A copy of the file is also copied to the
   not_qwerty123/priv/wordlists directory.
+
+  If adding the file results in a timeout error, try splitting
+  the file into smaller files and adding them.
   """
   def push(path), do: GenServer.cast(__MODULE__, {:push, path})
 

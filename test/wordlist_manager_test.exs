@@ -10,6 +10,11 @@ defmodule NotQwerty123.WordlistManagerTest do
     assert WM.query("p@$$w0rd123", 11) == true
   end
 
+  test "long passwords (> 24 chars) always return false" do
+    password = String.duplicate("password", 3) <> "p"
+    assert WM.query(password, 25) == false
+  end
+
   test "can add new wordlist to state" do
     assert WM.query("sparebutton", 11) == false
     WM.push @new_words

@@ -18,18 +18,12 @@ defmodule NotQwerty123.PasswordStrength do
   and user-specific words (company name, address, etc.) should also
   be avoided.
 
-  It is important to note that these guidelines, especially those regarding
-  password length, apply to online attacks, where the number of password
-  attempts is limited. With offline attacks, in the case of a database leak
-  for example, it will be far easier for an attacker to find the password,
-  and you might want to protect against that by adopting more stringent
-  password guidelines.
-
   ## Further information
 
-  Visit the [Comeonin wiki](https://github.com/elixircnx/comeonin/wiki)
-  for links to further information about password-related issues.
+  The [NIST password guidelines](https://pages.nist.gov/800-63-3/sp800-63b.html).
 
+  The [Comeonin wiki](https://github.com/elixircnx/comeonin/wiki)
+  also has links to further information about password-related issues.
   """
 
   import NotQwerty123.Gettext
@@ -40,8 +34,10 @@ defmodule NotQwerty123.PasswordStrength do
 
   It returns {:ok, password} or {:error, message}
 
-  The password is checked to make sure that it is not too short and
+  The password is checked to make sure that it is not too short, that
+  it does not consist of repeated characters (e.g. 'abcabcabcabc') and
   that it is not similar to any word in the common password list.
+
   See the documentation for NotQwerty123.WordlistManager for
   information about customizing the common password list.
 

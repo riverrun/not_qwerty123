@@ -1,7 +1,7 @@
 defmodule NotQwerty123.Mixfile do
   use Mix.Project
 
-  @version "2.2.0"
+  @version "2.2.1"
 
   @description """
   Library to check password strength and generate random passwords.

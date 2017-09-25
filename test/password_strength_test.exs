@@ -100,6 +100,14 @@ defmodule NotQwerty123.PasswordStrengthTest do
              end
   end
 
+  test "very long passwords (> 1024 chars) are not checked for repetitions" do
+    password = String.duplicate("password", 120) <> "p"
+    {:error, message} = strong_password?(password)
+    assert message =~ "password you have chosen is weak"
+    password = String.duplicate("password", 128) <> "p"
+    assert {:ok, _} = strong_password?(password)
+  end
+
   test "difficult to guess passwords" do
     for id <- read_file("allowed") do
       {:ok, password} = strong_password?(id, min_length: 6)
@@ -113,5 +121,4 @@ defmodule NotQwerty123.PasswordStrengthTest do
       assert password == id
     end
   end
-
 end
