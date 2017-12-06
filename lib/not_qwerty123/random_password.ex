@@ -26,10 +26,10 @@ defmodule NotQwerty123.RandomPassword do
 
   There are two options:
 
-    * length - length of the password, in characters
+    * `:length` - length of the password, in characters
       * the default is 8
       * the minimum length is 6
-    * characters - the character set - `:letters`, `:letters_digits` or `:letters_digits_punc`
+    * `:characters` - the character set - `:letters`, `:letters_digits` or `:letters_digits_punc`
       * the default is `:letters_digits`, which will use letters and digits in the password
       * `:digits` will only use digits
       * `:letters` will use uppercase and lowercase letters

@@ -45,7 +45,7 @@ defmodule NotQwerty123.PasswordStrength do
 
   There is one option:
 
-    * min_length - minimum allowable length of the password
+    * `:min_length` - minimum allowable length of the password
       * default is 8
 
   """

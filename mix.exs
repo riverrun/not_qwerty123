@@ -33,8 +33,7 @@ defmodule NotQwerty123.Mixfile do
   defp deps do
     [
       {:gettext, "~> 0.13"},
-      {:earmark, "~> 1.2", only: :dev},
-      {:ex_doc,  "~> 0.16", only: :dev}
+      {:ex_doc, "~> 0.18", only: :dev, runtime: false}
     ]
   end
 
