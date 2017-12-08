@@ -4,9 +4,9 @@ defmodule NotQwerty123.RandomPasswordTest do
   import NotQwerty123.RandomPassword
 
   test "random password length" do
-    assert gen_password(length: 8) |> String.length == 8
-    assert gen_password(length: 16) |> String.length == 16
-    assert gen_password() |> String.length == 8
+    assert gen_password(length: 8) |> String.length() == 8
+    assert gen_password(length: 16) |> String.length() == 16
+    assert gen_password() |> String.length() == 8
   end
 
   test "random password too short length" do
@@ -45,5 +45,4 @@ defmodule NotQwerty123.RandomPasswordTest do
       assert Regex.match?(~r/^[0-9]*$/, key)
     end
   end
-
 end

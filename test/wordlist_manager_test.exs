@@ -17,32 +17,31 @@ defmodule NotQwerty123.WordlistManagerTest do
 
   test "can add new wordlist to state" do
     assert WM.query("sparebutton", 11) == false
-    WM.push @new_words
+    WM.push(@new_words)
     assert WM.query("p@$$w0rd", 8) == true
     assert WM.query("sparebutton", 11) == true
   after
-    WM.pop "extra_wordlist.txt"
+    WM.pop("extra_wordlist.txt")
   end
 
   test "can remove wordlist from state" do
-    WM.push @new_words
+    WM.push(@new_words)
     assert WM.query("sparebutton", 11) == true
-    WM.pop "extra_wordlist.txt"
+    WM.pop("extra_wordlist.txt")
     assert WM.query("pa$$w0rd", 8) == true
     assert WM.query("sparebutton", 11) == false
   end
 
   test "list wordlists" do
-    assert WM.list_files == ["common_passwords.txt"]
-    WM.push @new_words
-    WM.list_files == ["common_passwords.txt", "extra_wordlist.txt"]
+    assert WM.list_files() == ["common_passwords.txt"]
+    WM.push(@new_words)
+    WM.list_files() == ["common_passwords.txt", "extra_wordlist.txt"]
   after
-    WM.pop "extra_wordlist.txt"
+    WM.pop("extra_wordlist.txt")
   end
 
   test "cannot remove default password list" do
-    WM.pop "common_passwords.txt"
-    assert WM.list_files == ["common_passwords.txt"]
+    WM.pop("common_passwords.txt")
+    assert WM.list_files() == ["common_passwords.txt"]
   end
-
 end

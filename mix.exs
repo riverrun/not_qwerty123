@@ -12,13 +12,13 @@ defmodule NotQwerty123.Mixfile do
       app: :not_qwerty123,
       version: @version,
       elixir: "~> 1.4",
-      build_embedded: Mix.env == :prod,
-      start_permanent: Mix.env == :prod,
+      build_embedded: Mix.env() == :prod,
+      start_permanent: Mix.env() == :prod,
       name: "NotQwerty123",
       description: @description,
       package: package(),
       source_url: "https://github.com/riverrun/not_qwerty123",
-      compilers: [:gettext] ++ Mix.compilers,
+      compilers: [:gettext] ++ Mix.compilers(),
       deps: deps()
     ]
   end

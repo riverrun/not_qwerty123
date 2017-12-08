@@ -25,12 +25,23 @@ defmodule NotQwerty123.WordlistManager do
   use GenServer
 
   @sub_dict %{
-    "!" => ["i"], "@" => ["a"], "$" => ["s"],
-    "%" => ["x"], "(" => ["c"], "[" => ["c"],
-    "+" => ["t"], "|" => ["i", "l"],
-    "0" => ["o"], "1" => ["i", "l"], "2" => ["z"],
-    "3" => ["e"], "4" => ["a"], "5" => ["s"],
-    "6" => ["g"], "7" => ["t"], "8" => ["b"],
+    "!" => ["i"],
+    "@" => ["a"],
+    "$" => ["s"],
+    "%" => ["x"],
+    "(" => ["c"],
+    "[" => ["c"],
+    "+" => ["t"],
+    "|" => ["i", "l"],
+    "0" => ["o"],
+    "1" => ["i", "l"],
+    "2" => ["z"],
+    "3" => ["e"],
+    "4" => ["a"],
+    "5" => ["s"],
+    "6" => ["g"],
+    "7" => ["t"],
+    "8" => ["b"],
     "9" => ["g"]
   }
 
@@ -51,6 +62,7 @@ defmodule NotQwerty123.WordlistManager do
   def query(password, word_len) when word_len < 25 do
     GenServer.call(__MODULE__, {:query, password})
   end
+
   def query(_, _), do: false
 
   @doc """
@@ -84,28 +96,36 @@ defmodule NotQwerty123.WordlistManager do
   def handle_call({:query, password}, _from, state) do
     {:reply, run_check(state, password), state}
   end
+
   def handle_call(:list_files, _from, state) do
     {:reply, File.ls!(wordlist_dir()), state}
   end
 
   def handle_cast({:push, path}, state) do
-    new_state = case File.read path do
-      {:ok, words} ->
-        Path.join(wordlist_dir(), Path.basename(path)) |> File.write(words)
-        add_words(words) |> :sets.union(state)
-      _ -> state
-    end
+    new_state =
+      case File.read(path) do
+        {:ok, words} ->
+          Path.join(wordlist_dir(), Path.basename(path)) |> File.write(words)
+          add_words(words) |> :sets.union(state)
+
+        _ ->
+          state
+      end
+
     {:noreply, new_state}
   end
 
   def handle_cast({:pop, "common_passwords.txt"}, state) do
     {:noreply, state}
   end
+
   def handle_cast({:pop, path}, state) do
-    new_state = case File.rm(Path.join(wordlist_dir(), path)) do
-      :ok -> create_list()
-      _ -> state
-    end
+    new_state =
+      case File.rm(Path.join(wordlist_dir(), path)) do
+        :ok -> create_list()
+        _ -> state
+      end
+
     {:noreply, new_state}
   end
 
@@ -117,30 +137,36 @@ defmodule NotQwerty123.WordlistManager do
 
   defp create_list do
     File.ls!(wordlist_dir())
-    |> Enum.map(&Path.join(wordlist_dir(), &1)
-                |> File.read!
-                |> add_words)
-    |> :sets.union
+    |> Enum.map(
+         &(Path.join(wordlist_dir(), &1)
+           |> File.read!()
+           |> add_words)
+       )
+    |> :sets.union()
   end
 
   defp add_words(data) do
     data
-    |> String.downcase
+    |> String.downcase()
     |> String.split("\n")
     |> Enum.flat_map(&list_alternatives/1)
-    |> :sets.from_list
+    |> :sets.from_list()
   end
 
   defp run_check(wordlist, password) do
     words = list_alternatives(password)
-    alternatives = (words ++ Enum.map(words, &String.slice(&1, 1..-1))
-                    ++ Enum.map(words, &String.slice(&1, 0..-2))
-                    ++ Enum.map(words, &String.slice(&1, 1..-2)))
+
+    alternatives =
+      words ++
+        Enum.map(words, &String.slice(&1, 1..-1)) ++
+        Enum.map(words, &String.slice(&1, 0..-2)) ++ Enum.map(words, &String.slice(&1, 1..-2))
+
     reversed = Enum.map(alternatives, &String.reverse(&1))
     Enum.any?(alternatives ++ reversed, &:sets.is_element(&1, wordlist))
   end
 
   defp list_alternatives(""), do: [""]
+
   defp list_alternatives(password) do
     for i <- substitute(password) |> product, do: Enum.join(i)
   end
@@ -149,8 +175,11 @@ defmodule NotQwerty123.WordlistManager do
     for <<letter <- word>>, do: Map.get(@sub_dict, <<letter>>, [<<letter>>])
   end
 
-  defp product([h]), do: (for i <- h, do: [i])
-  defp product([h|t]) do
-    for i <- h, j <- product(t), do: [i|j]
+  defp product([h]), do: for(i <- h, do: [i])
+
+  defp product([h | t]) do
+    for i <- h,
+        j <- product(t),
+        do: [i | j]
   end
 end

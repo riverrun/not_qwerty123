@@ -17,7 +17,10 @@ defmodule NotQwerty123.RandomPassword do
   @punc '!#$%&\'()*+,-./:;<=>?@[\\]^_{|}~"'
   @alphabet @alpha ++ @digits ++ @punc
   @char_map Enum.map_reduce(@alphabet, 0, fn x, acc ->
-    {{acc, x}, acc + 1} end) |> elem(0) |> Enum.into(%{})
+              {{acc, x}, acc + 1}
+            end)
+            |> elem(0)
+            |> Enum.into(%{})
 
   @doc """
   Generate a random password.
@@ -37,22 +40,27 @@ defmodule NotQwerty123.RandomPassword do
 
   """
   def gen_password(opts \\ []) do
-    {len, chars} = {Keyword.get(opts, :length, 8),
-      Keyword.get(opts, :characters, :letters_digits)}
-    (for val <- rand_numbers(len, chars), do: Map.get(@char_map, val))
-    |> to_string() |> ensure_strong(opts)
+    {len, chars} =
+      {Keyword.get(opts, :length, 8), Keyword.get(opts, :characters, :letters_digits)}
+
+    for(val <- rand_numbers(len, chars), do: Map.get(@char_map, val))
+    |> to_string()
+    |> ensure_strong(opts)
   end
 
   defp rand_numbers(len, chars) when len > 5 do
-    {start_range, end_range} = case chars do
-      :digits -> {52, 62}
-      :letters -> {0, 52}
-      :letters_digits_punc -> {0, 93}
-      _ -> {0, 62}
-    end
+    {start_range, end_range} =
+      case chars do
+        :digits -> {52, 62}
+        :letters -> {0, 52}
+        :letters_digits_punc -> {0, 93}
+        _ -> {0, 62}
+      end
+
     :crypto.rand_seed()
-    for _ <- 1..len, do: Enum.random(start_range..end_range - 1)
+    for _ <- 1..len, do: Enum.random(start_range..(end_range - 1))
   end
+
   defp rand_numbers(_, _) do
     raise ArgumentError, message: "The password should be at least 6 characters long."
   end

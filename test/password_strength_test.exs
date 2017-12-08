@@ -5,7 +5,7 @@ defmodule NotQwerty123.PasswordStrengthTest do
 
   defp read_file(filename) do
     Path.expand("support/#{filename}.txt", __DIR__)
-    |> File.read!
+    |> File.read!()
     |> String.split("\n", trim: true)
   end
 
@@ -19,7 +19,7 @@ defmodule NotQwerty123.PasswordStrengthTest do
   test "password minimum length config" do
     {:ok, password} = strong_password?("4ghY&j2", min_length: 6)
     assert password == "4ghY&j2"
-    {:error, message} = strong_password?("4ghY&j2", [min_length: 8])
+    {:error, message} = strong_password?("4ghY&j2", min_length: 8)
     assert message =~ "password should be at least 8 characters long"
   end
 
@@ -73,31 +73,33 @@ defmodule NotQwerty123.PasswordStrengthTest do
   end
 
   test "repeated characters easy to guess" do
-    for id <- ["xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-               "abcabcabcabcabcabcabc",
-               "abcdabcdabcdabcd",
-               "abcdeabcdeabcdeabcde",
-               "abcdefABCDEFabcdefABCDEF",
-               "abcdefgABCDEFGabcdefgABCDEFG",
-               "abcdefghABCDEFGHabcdefghABCDEFGH",
-               "abcabcabcabcabcabca",
-               "abcdeabcdeabcdeab"
-             ] do
-              {:error, message} = strong_password?(id)
-              assert message =~ "password you have chosen is weak"
-             end
+    for id <- [
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "abcabcabcabcabcabcabc",
+          "abcdabcdabcdabcd",
+          "abcdeabcdeabcdeabcde",
+          "abcdefABCDEFabcdefABCDEF",
+          "abcdefgABCDEFGabcdefgABCDEFG",
+          "abcdefghABCDEFGHabcdefghABCDEFGH",
+          "abcabcabcabcabcabca",
+          "abcdeabcdeabcdeab"
+        ] do
+      {:error, message} = strong_password?(id)
+      assert message =~ "password you have chosen is weak"
+    end
   end
 
   test "not repeated characters - should return true" do
-    for id <- ["abcabcacbabcabcabcabc",
-               "abababababaabbabababababababa",
-               "abcdabcadbcdabcd",
-               "abcdeacbdeabcdeabcde",
-               "abcdefABCEDFabcdefABCDEF"
-             ] do
-              {:ok, password} = strong_password?(id)
-              assert password == id
-             end
+    for id <- [
+          "abcabcacbabcabcabcabc",
+          "abababababaabbabababababababa",
+          "abcdabcadbcdabcd",
+          "abcdeacbdeabcdeabcde",
+          "abcdefABCEDFabcdefABCDEF"
+        ] do
+      {:ok, password} = strong_password?(id)
+      assert password == id
+    end
   end
 
   test "very long passwords (> 1024 chars) are not checked for repetitions" do

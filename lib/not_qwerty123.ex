@@ -15,6 +15,6 @@ defmodule NotQwerty123 do
 
   @doc false
   def start(_type, _args) do
-    NotQwerty123.Supervisor.start_link
+    NotQwerty123.Supervisor.start_link()
   end
 end

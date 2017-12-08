@@ -52,9 +52,15 @@ defmodule NotQwerty123.PasswordStrength do
   def strong_password?(password, opts \\ []) do
     min_len = Keyword.get(opts, :min_length, 8)
     word_len = String.length(password)
+
     if min_len > word_len do
-      {:error, gettext("The password should be at least %{min_len} " <>
-        "characters long.", min_len: min_len)}
+      {
+        :error,
+        gettext(
+          "The password should be at least %{min_len} " <> "characters long.",
+          min_len: min_len
+        )
+      }
     else
       easy_guess?(password, word_len) |> result
     end
@@ -62,16 +68,23 @@ defmodule NotQwerty123.PasswordStrength do
 
   defp easy_guess?(password, word_len) when word_len < 1025 do
     key = String.downcase(password)
-    Regex.match?(~r/^.?(..?.?.?.?.?.?.?)(\1+).?$/, key) or
-    WordlistManager.query(key, word_len) or
-    password
+
+    Regex.match?(~r/^.?(..?.?.?.?.?.?.?)(\1+).?$/, key) or WordlistManager.query(key, word_len) or
+      password
   end
+
   defp easy_guess?(password, _), do: password
 
   defp result(true) do
-    {:error, gettext("The password you have chosen is weak because it is " <>
-      "easy to guess. Please choose another one.")}
+    {
+      :error,
+      gettext(
+        "The password you have chosen is weak because it is " <>
+          "easy to guess. Please choose another one."
+      )
+    }
   end
+
   defp result({:error, message}), do: {:error, message}
   defp result(password), do: {:ok, password}
 end

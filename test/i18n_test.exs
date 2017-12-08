@@ -15,8 +15,7 @@ defmodule NotQwerty123.I18nTest do
     assert message =~ "パスワードは8文字以上である必要があります。"
 
     {:error, message} = strong_password?("p@55W0rD")
-    assert message =~
-    "入力されたパスワードは推測が容易で強度が不十分です。違うものを指定してください。"
+    assert message =~ "入力されたパスワードは推測が容易で強度が不十分です。違うものを指定してください。"
   end
 
   test "gettext returns French message if locale is fr_FR" do
@@ -46,5 +45,4 @@ defmodule NotQwerty123.I18nTest do
     {:error, message} = strong_password?("short")
     assert message =~ "La clave debe contener al menos 8 caracteres."
   end
-
 end
