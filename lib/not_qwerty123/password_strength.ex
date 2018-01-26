@@ -57,7 +57,7 @@ defmodule NotQwerty123.PasswordStrength do
       {
         :error,
         gettext(
-          "The password should be at least %{min_len} " <> "characters long.",
+          "The password should be at least %{min_len} characters long.",
           min_len: min_len
         )
       }
@@ -79,8 +79,7 @@ defmodule NotQwerty123.PasswordStrength do
     {
       :error,
       gettext(
-        "The password you have chosen is weak because it is " <>
-          "easy to guess. Please choose another one."
+        "The password you have chosen is weak because it is easy to guess. Please choose another one."
       )
     }
   end
