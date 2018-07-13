@@ -2,6 +2,7 @@ defmodule NotQwerty123.PasswordStrengthTest do
   use ExUnit.Case
 
   import NotQwerty123.PasswordStrength
+  import NotQwerty123.RandomPassword
 
   defp read_file(filename) do
     Path.expand("support/#{filename}.txt", __DIR__)
@@ -123,4 +124,27 @@ defmodule NotQwerty123.PasswordStrengthTest do
       assert password == id
     end
   end
+
+  test "randomly generated passwords and ensure options" do
+    opts =
+      :letters_digits
+    password =
+      gen_password([characters: opts])
+    check =
+      ensure_opts(password, opts)
+    assert check
+  end
+
+  test "randomly generated passwords and ensure length" do
+    opts =
+      :letters_digits
+    length =
+      12
+    password =
+      gen_password([length: length, characters: opts])
+    check =
+      ensure_len(password, length)
+    assert check
+  end
+
 end

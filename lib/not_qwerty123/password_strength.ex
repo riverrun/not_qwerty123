@@ -29,6 +29,11 @@ defmodule NotQwerty123.PasswordStrength do
   import NotQwerty123.Gettext
   alias NotQwerty123.WordlistManager
 
+  @regex_alpha ~r/[A-Za-z]/
+  @regex_digits ~r/[0-9]/
+  @regex_punc ~r/[\.,\\\/#!$%\^&\*;:{}=\-_`~()\<\>\[\]\|\"\@\?\+\']/
+  @regex_all ~r/./
+
   @doc """
   Check the strength of the password.
 
@@ -86,4 +91,49 @@ defmodule NotQwerty123.PasswordStrength do
 
   defp result({:error, message}), do: {:error, message}
   defp result(password), do: {:ok, password}
+
+  @doc """
+  Check if a password meets options requirements.
+
+  ## Options
+
+    * `:digits` will only use digits
+    * `:letters` will use uppercase and lowercase letters
+    * `:letters_digits_punc` will use letters, digits and punctuation characters
+
+  """
+  def ensure_opts(password, opts) do
+    test_list =
+      case opts do
+        :digits -> [@regex_digits]
+        :letters -> [@regex_alpha]
+        :letters_digits -> [@regex_alpha, @regex_digits]
+        :letters_digits_punc -> [@regex_alpha, @regex_digits, @regex_punc]
+        _ -> [@regex_all]
+      end
+    _test =
+      test_list
+      |> Enum.reduce([], fn x, acc ->
+        check =
+          Regex.match?(x, password)
+        [check]
+        |> Enum.into(acc)
+      end)
+      |> List.flatten()
+      |> Enum.member?(false)
+      |> Kernel.not()
+  end
+
+  @doc """
+  Check if a password meets minimun length.
+  """
+  def ensure_len(password, length) do
+    password_length =
+      password
+      |> String.length()
+    _test =
+      password_length
+      |> Kernel.>=(length)
+  end
+
 end
