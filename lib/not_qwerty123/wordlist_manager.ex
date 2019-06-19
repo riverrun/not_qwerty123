@@ -3,14 +3,21 @@ defmodule NotQwerty123.WordlistManager do
   Module to manage the common password list and handle password checks.
 
   The main function that NotQwerty123 performs is to check that the
-  password, and several transformations of the password, is not in
-  the list of common passwords that this WordlistManager stores.
+  password or a variant of the password (in other words, even with minor changes)
+  is not in the list of common passwords that this WordlistManager stores.
 
   By default, this common password list contains one file, which
-  is a list of over 40,000 common passwords in it. This provides
-  a good basis for the password check, but it can also be useful
-  to add other words to this list, especially words associated
-  with the site you are managing.
+  has a list of over 40,000 common passwords in it - this file
+  was collated by [zxcvbn](https://github.com/dropbox/zxcvbn),
+  a reputable password strength meter.
+
+  Other files can be added to this common password list, and there
+  are example files in the `priv/data` directory (these files are
+  also taken from the zxcvbn repository).
+
+  In order to make the password strength check even stronger, it
+  is also recommended to add to the list words that are associated with
+  the site you are managing.
 
   ## Managing the common password list
 
