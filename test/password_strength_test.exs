@@ -82,7 +82,8 @@ defmodule NotQwerty123.PasswordStrengthTest do
           "abcdefgABCDEFGabcdefgABCDEFG",
           "abcdefghABCDEFGHabcdefghABCDEFGH",
           "abcabcabcabcabcabca",
-          "abcdeabcdeabcdeab"
+          "abcdeabcdeabcdeab",
+          "passwordPASSWORDpasswordPASSWORD"
         ] do
       {:error, message} = strong_password?(id)
       assert message =~ "password you have chosen is weak"

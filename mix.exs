@@ -1,7 +1,7 @@
 defmodule NotQwerty123.Mixfile do
   use Mix.Project
 
-  @version "2.3.0"
+  @version "2.3.1"
 
   @description """
   Library to check password strength and generate random passwords.
@@ -31,8 +31,8 @@ defmodule NotQwerty123.Mixfile do
 
   defp deps do
     [
-      {:gettext, "~> 0.14"},
-      {:ex_doc, "~> 0.18", only: :dev, runtime: false}
+      {:gettext, "~> 0.16"},
+      {:ex_doc, "~> 0.20", only: :dev, runtime: false}
     ]
   end
 

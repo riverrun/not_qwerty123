@@ -138,10 +138,10 @@ defmodule NotQwerty123.WordlistManager do
   defp create_list do
     File.ls!(wordlist_dir())
     |> Enum.map(
-         &(Path.join(wordlist_dir(), &1)
-           |> File.read!()
-           |> add_words)
-       )
+      &(Path.join(wordlist_dir(), &1)
+        |> File.read!()
+        |> add_words)
+    )
     |> :sets.union()
   end
 
