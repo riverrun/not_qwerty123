@@ -27,6 +27,7 @@ defmodule NotQwerty123.PasswordStrength do
   """
 
   import NotQwerty123.Gettext
+
   alias NotQwerty123.WordlistManager
 
   @doc """
@@ -54,29 +55,40 @@ defmodule NotQwerty123.PasswordStrength do
     word_len = String.length(password)
 
     if min_len > word_len do
-      {:error,
-       gettext("The password should be at least %{min_len} characters long.", min_len: min_len)}
+      {:error, too_short_error(min_len)}
     else
-      easy_guess?(password, word_len) |> result
+      if easy_guess?(String.downcase(password), word_len) do
+        {:error, easy_guess_error()}
+      else
+        {:ok, password}
+      end
     end
   end
 
-  defp easy_guess?(password, word_len) when word_len < 1025 do
-    key = String.downcase(password)
+  defp easy_guess?(key, key_len) do
+    case repetition_check(key, key_len) do
+      nil ->
+        WordlistManager.query(key, key_len)
 
-    Regex.match?(~r/^.?(..?.?.?.?.?.?.?)(\1+).?$/, key) or WordlistManager.query(key, word_len) or
-      password
+      [_, key] ->
+        key_len = String.length(key)
+        key_len < 7 or WordlistManager.query(key, key_len)
+    end
   end
 
-  defp easy_guess?(password, _), do: password
+  defp repetition_check(_, word_len) when word_len > 128, do: nil
 
-  defp result(true) do
-    {:error,
-     gettext(
-       "The password you have chosen is weak because it is easy to guess. Please choose another one."
-     )}
+  defp repetition_check(word, _) do
+    Regex.run(~r/^.?(.+?)\1+.?$/, word)
   end
 
-  defp result({:error, message}), do: {:error, message}
-  defp result(password), do: {:ok, password}
+  defp easy_guess_error do
+    gettext(
+      "The password you have chosen is weak because it is easy to guess. Please choose another one."
+    )
+  end
+
+  defp too_short_error(min_len) do
+    gettext("The password should be at least %{min_len} characters long.", min_len: min_len)
+  end
 end

@@ -2,7 +2,7 @@ defmodule NotQwerty123.Mixfile do
   use Mix.Project
 
   @source_url "https://github.com/riverrun/not_qwerty123"
-  @version "2.3.2"
+  @version "2.4.0"
 
   def project do
     [
@@ -28,7 +28,8 @@ defmodule NotQwerty123.Mixfile do
   defp deps do
     [
       {:gettext, "~> 0.18"},
-      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
+      {:benchee, "~> 1.0", only: :dev}
     ]
   end
 
