@@ -23,9 +23,9 @@ defmodule NotQwerty123.WordlistManager do
 
   The following functions can be used to manage this list:
 
-    * list_wordlists/0 - list the files used to create the wordlist
-    * push/1 - add a file to the wordlist
-    * pop/1 - remove a file from the wordlist
+    * `list_wordlists/0` - list the files used to create the wordlist
+    * `push/1` - add a file to the wordlist
+    * `pop/1` - remove a file from the wordlist
 
   """
 
@@ -85,7 +85,7 @@ defmodule NotQwerty123.WordlistManager do
 
   The file is parsed and the words are added to the common password
   list. A copy of the file is also copied to the
-  not_qwerty123/priv/wordlists directory.
+  `not_qwerty123/priv/wordlists` directory.
 
   If adding the file results in a timeout error, try splitting
   the file into smaller files and adding them.
