@@ -11,7 +11,7 @@ defmodule NotQwerty123.Mixfile do
     [
       app: :not_qwerty123,
       version: @version,
-      elixir: "~> 1.4",
+      elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
       name: "NotQwerty123",
       description: @description,
