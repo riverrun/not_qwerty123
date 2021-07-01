@@ -1,7 +1,7 @@
 defmodule NotQwerty123.Mixfile do
   use Mix.Project
 
-  @version "2.3.1"
+  @version "2.3.2-dev"
 
   @description """
   Library to check password strength and generate random passwords.
@@ -24,7 +24,7 @@ defmodule NotQwerty123.Mixfile do
 
   def application do
     [
-      extra_applications: [:logger],
+      extra_applications: [:logger, :crypto],
       mod: {NotQwerty123, []}
     ]
   end
