@@ -52,7 +52,7 @@ defmodule NotQwerty123.WordlistManager do
     "9" => ["g"]
   }
 
-  def start_link() do
+  def start_link(_) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 

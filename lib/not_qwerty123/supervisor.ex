@@ -7,9 +7,9 @@ defmodule NotQwerty123.Supervisor do
 
   def init([]) do
     children = [
-      worker(NotQwerty123.WordlistManager, [])
+      NotQwerty123.WordlistManager
     ]
 
-    supervise(children, strategy: :one_for_all)
+    Supervisor.init(children, strategy: :one_for_all)
   end
 end
