@@ -32,21 +32,21 @@ defmodule NotQwerty123.PasswordStrength do
   @doc """
   Check the strength of the password.
 
-  It returns {:ok, password} or {:error, message}
+  It returns `{:ok, password}` or `{:error, message}`.
 
   The password is checked to make sure that it is not too short, that
   it does not consist of repeated characters (e.g. 'abcabcabcabc') and
   that it is not similar to any word in the common password list.
 
-  See the documentation for NotQwerty123.WordlistManager for
+  See the documentation for `NotQwerty123.WordlistManager` for
   information about customizing the common password list.
 
   ## Options
 
-  There is one option:
+  There is only one option:
 
     * `:min_length` - minimum allowable length of the password
-      * default is 8
+      * default is `8`
 
   """
   def strong_password?(password, opts \\ []) do
